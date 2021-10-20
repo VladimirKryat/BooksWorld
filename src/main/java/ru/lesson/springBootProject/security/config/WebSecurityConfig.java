@@ -1,18 +1,12 @@
 package ru.lesson.springBootProject.security.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 import javax.sql.DataSource;
 
@@ -36,6 +30,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .logout()
                     .permitAll();
     }
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.jdbcAuthentication()
+                .dataSource(dataSource)
+                .passwordEncoder(NoOpPasswordEncoder.getInstance()) //временная реализация
+                .usersByUsernameQuery("select username, password, true from userdata where username=? and state like 'ACTIVE'")  //порядок полей определён системой
+                .authoritiesByUsernameQuery("select u.username, ur.roles from userdata u join user_role ur on u.user_id=ur.user_id where u.username=?");
+   }
+
+
+    //first implementation for testing controllers and links
     //@Bean
 
     /*@Override
@@ -47,12 +52,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .build();
         return new InMemoryUserDetailsManager(user);
     }*/
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication()
-                .dataSource(dataSource)
-                .passwordEncoder(NoOpPasswordEncoder.getInstance()) //временная реализация
-                .usersByUsernameQuery("select username, password, true from userdata where username=? and state like 'ACTIVE'")  //порядок полей определён системой
-                .authoritiesByUsernameQuery("select u.username, ur.roles from userdata u join user_role ur on u.user_id=ur.user_id where u.username=?");
-   }
 }
