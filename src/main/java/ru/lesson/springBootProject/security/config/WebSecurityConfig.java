@@ -29,9 +29,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .formLogin()
                     .loginPage("/login")
                     .permitAll()
+                .defaultSuccessUrl("/greeting")
                 .and()
                     .logout()
-                    .permitAll();
+                    .permitAll()
+                    .logoutSuccessUrl("/");
+
     }
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
