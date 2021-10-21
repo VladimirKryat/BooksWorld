@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <title>Spring Security Example</title>
+</head>
+<body>
+Add new comment
+<form method="post" action="/comment">
+    <div >
+        <label for="text"> Text   <textarea type="text" id="text" name="text"></textarea><br/></label>
+        <label for="stars"> Stars <input id="stars" type="text" name="stars"><br/></label>
+        <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
+<!--        <div><label for="remember-me"> <input type="checkbox" id="remember-me" name="remember-me">Запомнить меня</label><br/>-->
+        </div>
+    </div>
+    <button type="submit" value="Add comment">Добавить</button>
+</form>
+
+<div>
+    <b>CommentID</b>
+    <b>Text</b>
+    <b>Stars</b>
+    <br/>
+    {{#comments}}
+        <b>{{commentId}}</b>
+        <b>{{text}}</b>
+        <b>{{stars}}</b>
+        <b>
+<!--            user выдаёт пользователя ОС!!!!-->
+            {{#author}}
+                {{author}}
+            {{/author}}
+            {{^author}}
+                none
+            {{/author}}
+            </b>
+        <br/>
+    {{/comments}}
+</div>
+
+</body>
+</html>

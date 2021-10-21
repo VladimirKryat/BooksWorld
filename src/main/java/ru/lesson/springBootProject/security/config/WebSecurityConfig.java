@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import ru.lesson.springBootProject.security.services.UserDetailsServiceImpl;
 
 import javax.sql.DataSource;
 
@@ -15,6 +16,8 @@ import javax.sql.DataSource;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private DataSource dataSource;
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -32,24 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication()
-                .dataSource(dataSource)
-                .passwordEncoder(NoOpPasswordEncoder.getInstance()) //временная реализация
-                .usersByUsernameQuery("select username, password, true from userdata where username=? and state like 'ACTIVE'")  //порядок полей определён системой
-                .authoritiesByUsernameQuery("select u.username, ur.roles from userdata u join user_role ur on u.user_id=ur.user_id where u.username=?");
-   }
-
-
-    //first implementation for testing controllers and links
-    //@Bean
-
-    /*@Override
-    protected UserDetailsService userDetailsService() {
-        UserDetails user = User.withDefaultPasswordEncoder()
-                .username("u")
-                .password("p")
-                .roles("USER")
-                .build();
-        return new InMemoryUserDetailsManager(user);
-    }*/
+        auth.userDetailsService(userDetailsService)
+                .passwordEncoder(NoOpPasswordEncoder.getInstance());
+    }
 }
