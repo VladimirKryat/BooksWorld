@@ -25,8 +25,7 @@ public class UserDetailsImpl implements UserDetails {
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        //нельзя передать просто список нашх ролей, так как они не имплементируют GrantedAuthority
-        return user.getRoles().stream().map(x->new SimpleGrantedAuthority(x.name())).collect(Collectors.toList());
+        return user.getRoles();
     }
 
     @Override
