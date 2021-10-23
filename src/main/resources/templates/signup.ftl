@@ -3,10 +3,8 @@
 <@p.page>
 
     <!--если message!=null выводим его-->
-    <#if message??>
-        ${message}
-        </br>
-    </#if>
+    ${message?ifExists}
+    </br>
     Add new user
 
     <@l.login "/signup"/>

@@ -15,6 +15,7 @@ public class CommentForm {
     private String text;
     private Byte stars;
     private UserForm author;
+    private String filename;
     public static CommentForm from(Comment comment){
         CommentForm commentForm = CommentForm.builder()
                 .commentId(comment.getCommentId())
@@ -23,6 +24,9 @@ public class CommentForm {
                 .build();
         if (comment.getAuthor()!=null){
             commentForm.setAuthor(UserForm.from(comment.getAuthor()));
+        }
+        if (comment.getFilename()!=null){
+            commentForm.setFilename(comment.getFilename());
         }
         return commentForm;
     }

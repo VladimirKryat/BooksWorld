@@ -27,4 +27,7 @@ public class Comment {
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = User.class)
     @JoinColumn(name = "user_id")
     private User author;
+
+    @Column(name = "filename")
+    private String filename;
 }

@@ -15,6 +15,7 @@
                 <th>Stars</th>
                 <th>Author</th>
                 <th>AuthorID</th>
+                <th>Filename</th>
             </tr>
 
             <#list comments as comment>
@@ -29,6 +30,11 @@
                         <td> &lt;none&gt; </td>
                         <td> &lt;none&gt; </td>
                     </#if>
+                    <td>
+                        <#if comment.filename??>
+                            <img src="/img/${comment.filename}"
+                        </#if>
+                    </td>
                 </tr>
             </#list>
         </table>

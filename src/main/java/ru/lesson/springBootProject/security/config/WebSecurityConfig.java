@@ -21,11 +21,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
+    //добавили раздачу статиков всем
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers("/","/signup").permitAll()
+                    .antMatchers("/","/signup","/static/**").permitAll()
                     .anyRequest().authenticated()
                 .and()
                     .formLogin()
