@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.lesson.springBootProject.models.Comment;
 
+import java.util.Arrays;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,5 +31,12 @@ public class CommentForm {
             commentForm.setFilename(comment.getFilename());
         }
         return commentForm;
+    }
+
+    public String starsByShape(){
+        char[] chars = new char[this.stars];
+        Arrays.fill(chars,'\u2605');
+        System.out.println(new String(chars));
+        return new String(chars);
     }
 }

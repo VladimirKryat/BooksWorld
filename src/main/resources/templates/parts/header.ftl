@@ -25,7 +25,3 @@
 </body>
 </html>
 </#macro>
-
-<#macro linkUser>
-    <a href="/user">Admin</a>
-</#macro>

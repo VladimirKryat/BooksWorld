@@ -1,43 +1,32 @@
 <#import "parts/header.ftl" as p>
-<#import "parts/loginForm.ftl" as l>
 <#import "parts/commentForm.ftl" as c>
 <@p.page>
 
-    Add new comment
-    <@c.comment "/comment"/>
-
-    <div>
-
-        <table>
-            <tr>
-                <th>CommentID</th>
-                <th>Text</th>
-                <th>Stars</th>
-                <th>Author</th>
-                <th>AuthorID</th>
-                <th>Filename</th>
-            </tr>
-
-            <#list comments as comment>
-                <tr>
-                    <td>${comment.commentId}</td>
-                    <td>${comment.text}</td>
-                    <td>${comment.stars}</td>
-                    <#if comment.author??>
-                        <td>${comment.author.username}</td>
-                        <td>${comment.author.userId}</td>
-                    <#else>
-                        <td> &lt;none&gt; </td>
-                        <td> &lt;none&gt; </td>
-                    </#if>
-                    <td>
-                        <#if comment.filename??>
-                            <img src="/img/${comment.filename}"
-                        </#if>
-                    </td>
-                </tr>
-            </#list>
-        </table>
+    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+        Add comment
+    </a>
+    <div class="collapse" id="collapseExample">
+        <@c.comment "/comment"/>
     </div>
-    <@l.logout/>
+
+<#--'★'-->
+    <div class="card-columns">
+        <#assign col=0/>
+            <#list comments as comment>
+                <div class="card my-3" style="width: 18rem;">
+                    <#if comment.filename??>
+                        <img class="card-img-top" src="/img/${comment.filename}">
+                    </#if>
+                    <div class="card-body">
+                        <h5 class="card-title">
+                                ${(comment.author.username)!'Guest'}
+                        </h5>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            ${comment.starsByShape()}
+                        </h6>
+                        <p class="card-text">${comment.text}</p>
+                    </div>
+                </div>
+            </#list>
+    </div>
 </@p.page>

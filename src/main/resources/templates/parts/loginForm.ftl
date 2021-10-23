@@ -1,19 +1,31 @@
-<#macro login path>
-    <form method="post" action="${path}">
-        <div >
-            <label for="username"> Name:   <input type="text" id="username" name="username"><br/></label>
-            <label for="password"> Password: <input id="password" type="password" name="password"><br/></label>
-            <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-            <!--        <div><label for="remember-me"> <input type="checkbox" id="remember-me" name="remember-me">Запомнить меня</label><br/>-->
+<#macro login isRegistration>
+    <#if isRegistration>
+        <#assign
+        formPath="/signup"
+        linkPath="/login"
+        linkName="Log In"
+        >
+    <#else >
+        <#assign
+        formPath="/login"
+        linkPath="/signup"
+        linkName="Sign Up"
+        >
+    </#if>
+    <form method="post" action="${formPath}" xmlns="http://www.w3.org/1999/html">
+        <div class="form-group col-sm-3">
+            <label for="username"> Login: </label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Login">
         </div>
+        <div class="form-group col-sm-3">
+            <label for="password"> Password: </label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+            <small id="passwordHelp" class="form-text text-muted">Must be 8-20 characters long.</small>
         </div>
-        <button type="submit">Подтвердить</button>
-    </form>
-</#macro>
-
-<#macro logout>
-    <form method="post" action="/logout">
-        <button type="submit">Sign Out</button>
-        <input type="hidden" name="_csrf" value="${_csrf.token}">
+        <div class="form-group col-sm-3">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="${linkPath}" class="btn btn-primary">${linkName}</a>
+        </div>
+        <input type="hidden" name="_csrf" value="${_csrf.token}"/>
     </form>
 </#macro>

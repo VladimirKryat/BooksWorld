@@ -4,8 +4,5 @@
 
     <!--если message!=null выводим его-->
     ${message?ifExists}
-    </br>
-    Add new user
-
-    <@l.login "/signup"/>
+    <@l.login true/>
 </@p.page>
