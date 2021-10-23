@@ -53,8 +53,8 @@ public class UserController {
         //чтобы отобрать из полученных параметров роли, нужно получить список возможных значений Role в строковом представлении
         //иначе Role.valueOf будет выбрасывать исключения
         List<String> listRoles = Arrays.stream(Role.values()).map(Enum::name).collect(Collectors.toList());
+        user.getRoles().clear();
         for (String key : mapUser.keySet()) {
-            user.getRoles().clear();
             if (listRoles.contains(key)){
                 user.getRoles().add(Role.valueOf(key));
             }

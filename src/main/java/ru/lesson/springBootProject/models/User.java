@@ -41,4 +41,8 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private Set<Role> roles;
 
+    public boolean isAdmin(){
+        return this.getRoles().contains(Role.ADMIN);
+    }
+
 }

@@ -1,7 +1,5 @@
 <#import "parts/header.ftl" as p>
 <@p.page>
-    <div>
-        ${some?ifExists}
-    </div>
-    <a href="/greeting">Greeting page</a>
+    <h5>Hello, guest</h5>
+    <div>This is a studies project of Spring Boot.</div>
 </@p.page>
