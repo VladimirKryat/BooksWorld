@@ -32,8 +32,6 @@ public class User {
     @Column (name="email")
     private String email;
 
-    @Column(name="activation_code")
-    private String activationCode;
 
     //подобно OneToMany  за тем исключением, что нам не нужно описывает Role как Entity/Embeddable
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)

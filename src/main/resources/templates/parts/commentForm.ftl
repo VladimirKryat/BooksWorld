@@ -8,8 +8,7 @@
 
             <div class="form-group col-sm-4 pl-0">
                 <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="customFile" name="file">
-                    <label class="custom-file-label" for="customFile">Choose file</label>
+                    <input type="file" class="file-path validate"  id="customFileLangHTML" name="file">
                 </div>
             </div>
             <div class="form-group" id = "radioStars">
@@ -42,6 +41,6 @@
             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
             <!--        <div><label for="remember-me"> <input type="checkbox" id="remember-me" name="remember-me">Запомнить меня</label><br/>-->
         </div>
-        <button type="button" class="btn btn-success mb-3">Добавить</button>
+        <button type="submit" class="btn btn-success mb-3">Добавить</button>
     </form>
 </#macro>
