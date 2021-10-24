@@ -1,0 +1,54 @@
+package ru.lesson.springBootProject.configs;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+
+import java.util.Properties;
+
+@Configuration
+public class MailConfig {
+    @Value("${spring.mail.host}")
+    private String host;
+    @Value("${spring.mail.username}")
+    private String username;
+    @Value("${spring.mail.password}")
+    private String password;
+    @Value("${spring.mail.port}")
+    private int port;
+    @Value("${spring.mail.protocol}")
+    private String protocol;
+    @Value("${mail.debug}")
+    private String debug;
+    @Value("${mail.smtp.ssl.enable}")
+    private String isSsl;
+    @Value("${mail.smtp.starttls.enable}")
+    private String isStartTls;
+    @Value("${mail.smtp.auth}")
+    private String isAuth;
+    @Value("${spring.mail.default-encoding}")
+    private String encoding;
+    @Qualifier("mailSender")
+    @Bean
+    public JavaMailSender getJavaMailSender(){
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost(host);
+        mailSender.setPort(port);
+        mailSender.setUsername(username);
+        mailSender.setPassword(password);
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", protocol);
+        props.put("mail.smtp.auth",isAuth);
+        props.put("mail.smtp.starttls.enable", isStartTls);
+        props.put("mail.smtp.ssl.enable",isSsl);
+//        debug - ответы почтового сервиса
+        props.put("mail.debug", debug);
+        mailSender.setJavaMailProperties(props);
+        mailSender.setProtocol(protocol);
+        mailSender.setDefaultEncoding(encoding);
+        return mailSender;
+    }
+}

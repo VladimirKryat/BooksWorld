@@ -1,4 +1,4 @@
-package ru.lesson.springBootProject.mvcConfig;
+package ru.lesson.springBootProject.configs;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
