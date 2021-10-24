@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import ru.lesson.springBootProject.security.services.UserDetailsServiceImpl;
+import ru.lesson.springBootProject.services.UserServiceImpl;
 
 import javax.sql.DataSource;
 //аннотация EnableGlobalMethodSecurity позволяет включить проверку ролей
@@ -19,7 +19,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private DataSource dataSource;
     @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    private UserServiceImpl userDetailsService;
 
     //добавили раздачу статиков всем
     @Override

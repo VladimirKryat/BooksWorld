@@ -17,6 +17,12 @@
             <label for="username"> Login: </label>
             <input type="text" class="form-control" id="username" name="username" placeholder="Login">
         </div>
+        <#if isRegistration>
+            <div class="form-group col-sm-3">
+                <label for="email"> Email: </label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+            </div>
+        </#if>
         <div class="form-group col-sm-3">
             <label for="password"> Password: </label>
             <input type="password" class="form-control" id="password" name="password" placeholder="Password">

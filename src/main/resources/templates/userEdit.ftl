@@ -17,6 +17,10 @@
                 </div>
             </div>
             <div class="form-group row my-1">
+                <input type="email" value="${(user.email)!'none'}" id="email" name="email" placeholder="Email:${(user.email)!'none'}">
+                <small class="form-text text-muted">Email</small>
+            </div>
+            <div class="form-group row my-1">
                 <#list states as state>
                     <div class="form-check form-check-inline">
                         <input type="radio" class="form-check-input" value="${state}" name="state" <#if user.state==state>checked</#if> >

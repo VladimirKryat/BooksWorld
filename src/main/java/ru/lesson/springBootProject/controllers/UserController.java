@@ -9,6 +9,7 @@ import ru.lesson.springBootProject.models.Role;
 import ru.lesson.springBootProject.models.State;
 import ru.lesson.springBootProject.models.User;
 import ru.lesson.springBootProject.repositories.UserRepository;
+import ru.lesson.springBootProject.services.UserService;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,10 +21,11 @@ import java.util.stream.Collectors;
 @PreAuthorize("hasAuthority('ADMIN')")
 public class UserController {
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
+
     @GetMapping
     public String userList(Model model){
-        model.addAttribute("users",userRepository.findAll());
+        model.addAttribute("users",userService.findAll());
         return "userList";
     }
     //спринг при получении userID в пути вытаскивает с репозитория сущность User
@@ -50,6 +52,9 @@ public class UserController {
         {
             user.setState(State.valueOf(mapUser.get("state")));
         }
+        if(mapUser.containsKey("email")){
+            user.setEmail(mapUser.get("email"));
+        }
         //чтобы отобрать из полученных параметров роли, нужно получить список возможных значений Role в строковом представлении
         //иначе Role.valueOf будет выбрасывать исключения
         List<String> listRoles = Arrays.stream(Role.values()).map(Enum::name).collect(Collectors.toList());
@@ -59,7 +64,7 @@ public class UserController {
                 user.getRoles().add(Role.valueOf(key));
             }
         }
-        userRepository.save(user);
+        userService.save(user);
         return "redirect:/user";
     }
 }

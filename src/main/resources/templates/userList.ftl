@@ -5,10 +5,11 @@
     <thead>
     <tr>
         <th>userID</th>
-        <th>Username</th>
-        <th>Password</th>
-        <th>State</th>
-        <th>Roles</th>
+        <th>&nbsp Username</th>
+        <th>&nbsp Email</th>
+        <th>&nbsp Password</th>
+        <th>&nbsp State</th>
+        <th>&nbsp Roles</th>
     </tr>
     </thead>
 
@@ -16,6 +17,7 @@
         <tr>
             <td>&nbsp${user.userId}&nbsp</td>
             <td>&nbsp${user.username}&nbsp</td>
+            <td>&nbsp${(user.email)!'<none>'}&nbsp</td>
             <td>&nbsp${user.password}&nbsp</td>
             <td>&nbsp${user.state}&nbsp</td>
             <td>&nbsp
