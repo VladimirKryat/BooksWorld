@@ -3,21 +3,18 @@ package ru.lesson.springBootProject.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.lesson.springBootProject.exceptions.ActivationServiceException;
 import ru.lesson.springBootProject.exceptions.UserServiceException;
-import ru.lesson.springBootProject.models.Activation;
 import ru.lesson.springBootProject.models.Role;
 import ru.lesson.springBootProject.models.State;
 import ru.lesson.springBootProject.models.User;
-import ru.lesson.springBootProject.repositories.ActivationRepository;
 import ru.lesson.springBootProject.repositories.UserRepository;
 import ru.lesson.springBootProject.security.details.UserDetailsImpl;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -25,6 +22,8 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     @Autowired
     private ActivationService activationService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
@@ -38,6 +37,7 @@ public class UserServiceImpl implements UserService {
         }
         user.setState(State.UNVERIFIED);
         user.setRoles(Collections.singleton(Role.USER));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User result = userRepository.save(user);        //сохраняем нового пользователя, и получаем его объект с заполненым id
         activationService.newActivation(result);        //создаём и отправляем активационный код на почту
         return result;
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
         }
         if (newUser.getPassword()!=null&&
                 !newUser.getPassword().strip().isEmpty()){
-            oldUser.setPassword(newUser.getPassword());
+            oldUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         }
         //если введён email и он отличен от существующего
         if (newUser.getEmail()!=null&&
@@ -94,5 +94,8 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
-
+    @Override
+    public boolean checkPassword(User user, String password) {
+        return passwordEncoder.matches(password, user.getPassword());
+    }
 }

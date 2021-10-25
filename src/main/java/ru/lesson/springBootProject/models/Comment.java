@@ -6,8 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.Arrays;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 
 @Data
 @NoArgsConstructor
@@ -21,9 +22,12 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
     private Long commentId;
-    @Column(length = 1000)
+    @Size(max = 2048, message = "Too long text of comment")
+    @Column(length = 2048)
     private String text;
-    @Column()
+    @Min(value = 1, message = "Value of stars from 1 to 5")
+    @Max(value = 5, message = "Value of stars from 1 to 5")
+    @Column(name="stars")
     private Byte stars;
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = User.class)
     @JoinColumn(name = "user_id")

@@ -24,7 +24,7 @@
                 </div>
                 <div class="form-group">
                     <input type="text" name="password" placeholder="New Password:">
-                    <small id="passwordHelp" class="form-text text-muted">Must be 8-20 characters long.</small>
+                    <small id="passwordHelp" class="form-text text-muted">Must be 4-20 characters long.</small>
                 </div>
 
             </div>

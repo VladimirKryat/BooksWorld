@@ -3,6 +3,9 @@ package ru.lesson.springBootProject.models;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Data
@@ -20,15 +23,27 @@ public class User {
     @EqualsAndHashCode.Exclude
     private Long userId;
 
+    @NotEmpty(message = "Username cannot be empty")
     @Column (name = "username", length = 50, unique = true, nullable = false)
     private String username;
-    @Column (name = "password", length = 150, nullable = false)
+    @NotEmpty(message = "Password cannot be empty")
+    @Size(min = 4, max=20, message = "Size password must be from 4 to 20")
+    @Column (name = "password", length = 100, nullable = false)
     private String password;
+    @NotEmpty(message = "Password confirmation cannot be empty")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @Transient
+    private String passwordConfirm;
+
+
 
     @Column (name ="state")
     @Enumerated(EnumType.STRING)
     private State state;
 
+    @NotEmpty(message = "Email cannot be empty")
+    @Email(message = "Email is not correct")
     @Column (name="email")
     private String email;
 
