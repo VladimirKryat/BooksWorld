@@ -35,8 +35,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .defaultSuccessUrl("/comment")
                 .and()
                     .logout()
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/")
                     .permitAll()
-                    .logoutSuccessUrl("/");
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID");
 
     }
     @Override

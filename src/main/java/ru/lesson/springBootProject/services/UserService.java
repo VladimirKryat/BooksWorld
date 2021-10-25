@@ -11,4 +11,11 @@ public interface UserService extends UserDetailsService {
     public User save(User user);
 
     boolean activateUser(String code);
+
+    User change(User oldUser, User newUser);
+    default boolean checkPassword(User user, String password){
+        System.out.println("need to implement checkPassword in UserService");
+        return user.getPassword().equals(password);
+    }
+
 }

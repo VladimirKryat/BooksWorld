@@ -17,20 +17,24 @@
             </li>
             </#if>
         </ul>
+
+        <div class="navbar-nav nav justify-content-end mr-5">
         <#if known>
-            <div class="navbar-text">${name}</div>
-            <div class="navbar-nav nav ml-1">
+            <#if user??>
+                <a class="btn btn-light nav-link" href="/user/profile">${name}</a>
+            <#else >
+                <div class="navbar-text">${name}</div>
+            </#if>
                 <form method="post" action="/logout">
                     <button type="submit" class="btn btn-light nav-link">Sign Out</button>
                     <input type="hidden" name="_csrf" value="${_csrf.token}">
                 </form>
-            </div>
         <#else >
-        <div class="navbar-nav nav justify-content-end mr-5">
                 <a class="btn btn-light nav-link" href="/login">Log In</a>
                 <a class="btn btn-light nav-link" href="/signup">Sign Up</a>
-        </div>
         </#if>
+        </div>
+
 
     </div>
 </nav>

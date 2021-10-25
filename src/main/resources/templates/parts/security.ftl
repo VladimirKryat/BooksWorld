@@ -8,8 +8,8 @@ known = Session.SPRING_SECURITY_CONTEXT??
     <#assign
     <#--        получим объект User если он авторизован в SpringSecurity (principal - UserDetails)-->
     user = Session.SPRING_SECURITY_CONTEXT.authentication.principal.getUser()
-    name = user.getUsername()
-    isAdmin = user.isAdmin()
+    name = Session.SPRING_SECURITY_CONTEXT.authentication.principal.getUsername()
+    isAdmin = Session.SPRING_SECURITY_CONTEXT.authentication.principal.isAdmin()
     >
 <#else >
     <#assign

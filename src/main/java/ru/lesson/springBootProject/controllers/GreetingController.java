@@ -10,8 +10,10 @@ import java.util.Map;
 @Controller
 public class GreetingController {
     @GetMapping("/")
-    public String root( Map<String, Object> map){
+    public String root( Map<String, Object> map,
+                        @RequestParam(value = "message",required = false)String message){
         map.put("some","Hello, Lets code!");
+        map.put("message",message);
         return "main";
     }
 }
