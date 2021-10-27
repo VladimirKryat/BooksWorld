@@ -4,11 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 
 @Data
 @NoArgsConstructor
@@ -22,12 +25,13 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
     private Long commentId;
-    @Size(max = 2048, message = "Too long text of comment")
+    @Length(max=2048,  message = "Too long text of comment (more than 2kB)")
     @Column(length = 2048)
     private String text;
     @Min(value = 1, message = "Value of stars from 1 to 5")
     @Max(value = 5, message = "Value of stars from 1 to 5")
-    @Column(name="stars")
+    @NotNull(message = "Stars cannot be null")
+    @Column(name="stars", nullable = false)
     private Byte stars;
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = User.class)
     @JoinColumn(name = "user_id")

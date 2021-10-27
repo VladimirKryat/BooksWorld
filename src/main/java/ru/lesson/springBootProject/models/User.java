@@ -1,6 +1,7 @@
 package ru.lesson.springBootProject.models;
 
 import lombok.*;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -30,11 +31,6 @@ public class User {
     @Size(min = 4, max=20, message = "Size password must be from 4 to 20")
     @Column (name = "password", length = 100, nullable = false)
     private String password;
-    @NotEmpty(message = "Password confirmation cannot be empty")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @Transient
-    private String passwordConfirm;
 
 
 

@@ -1,5 +1,6 @@
 package ru.lesson.springBootProject.security.listner;
 
+import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.AbstractAuthenticationEvent;
 import org.springframework.security.authentication.event.InteractiveAuthenticationSuccessEvent;
@@ -23,6 +24,7 @@ String auditMessage = "Login attempt with username: " +
         authentication.getCredentials() + " " +
         authentication.getPrincipal() + " " +
         "\t\tSuccess: " + authentication.isAuthenticated();
+
 System.out.println(auditMessage);
 }
 

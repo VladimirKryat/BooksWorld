@@ -34,9 +34,14 @@ public class CommentForm {
     }
 
     public String starsByShape(){
-        char[] chars = new char[this.stars];
-        Arrays.fill(chars,'\u2605');
-        System.out.println(new String(chars));
-        return new String(chars);
+        if(stars!=null){
+            char[] chars = new char[this.stars];
+            Arrays.fill(chars,'\u2605');
+            System.out.println(new String(chars));
+            return new String(chars);
+        }
+        else {
+            return "";
+        }
     }
 }

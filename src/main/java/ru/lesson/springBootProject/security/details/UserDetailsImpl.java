@@ -1,14 +1,12 @@
 package ru.lesson.springBootProject.security.details;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.lesson.springBootProject.models.Role;
 import ru.lesson.springBootProject.models.State;
 import ru.lesson.springBootProject.models.User;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 public class UserDetailsImpl implements UserDetails {
     private User user;
@@ -63,4 +61,5 @@ public class UserDetailsImpl implements UserDetails {
     public boolean isAdmin(){
         return this.getAuthorities().contains(Role.ADMIN);
     }
+
 }

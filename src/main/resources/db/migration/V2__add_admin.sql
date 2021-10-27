@@ -1,8 +1,8 @@
-INSERT INTO userdata(user_id, username,email, password, state)
-VALUES (1,'VladimirKryat','vladimirkryat@gmail.com','1997','ACTIVE');
+INSERT INTO userdata(username,email, password, state)
+VALUES ('VladimirKryat','vladimirkryat@gmail.com','1997','ACTIVE');
 
 INSERT INTO user_role (user_id,roles)
-VALUES (1,'USER');
+VALUES ((SELECT user_id FROM userdata WHERE username='VladimirKryat'),'USER');
 
 INSERT INTO user_role (user_id,roles)
-VALUES (1,'ADMIN');
+VALUES ((SELECT user_id FROM userdata WHERE username='VladimirKryat'),'ADMIN');

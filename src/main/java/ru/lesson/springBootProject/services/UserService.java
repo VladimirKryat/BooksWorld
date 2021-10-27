@@ -17,5 +17,5 @@ public interface UserService extends UserDetailsService {
         System.out.println("need to implement checkPassword in UserService");
         return user.getPassword().equals(password);
     }
-
+    boolean checkPasswordConfirm(String password, String passwordConfirm);
 }

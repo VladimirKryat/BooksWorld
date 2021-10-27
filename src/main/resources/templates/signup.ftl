@@ -3,6 +3,10 @@
 <@p.page>
 
     <!--если message!=null выводим его-->
-    ${message?ifExists}
+    <#if message??>
+        <div class="alert alert-danger" role="alert">
+            ${message}.
+        </div>
+    </#if>
     <@l.login true/>
 </@p.page>

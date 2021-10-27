@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.lesson.springBootProject.exceptions.ActivationServiceException;
 import ru.lesson.springBootProject.exceptions.UserServiceException;
+import ru.lesson.springBootProject.exceptions.UsernameNotUniqueException;
 import ru.lesson.springBootProject.models.Role;
 import ru.lesson.springBootProject.models.State;
 import ru.lesson.springBootProject.models.User;
@@ -27,13 +28,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return new UserDetailsImpl(userRepository.findByUsername(s).orElseThrow(()->new IllegalArgumentException("User not found by UserDetailsServiceImpl")));
+
+        return new UserDetailsImpl(userRepository.findByUsername(s).orElseThrow(()->new UsernameNotFoundException("User not found")));
     }
 
     @Override
     public User addUser(User user) throws UserServiceException{
         if (existsByUsername(user.getUsername())){
-           throw new UserServiceException("Username exist");
+           throw new UsernameNotUniqueException("Username exist");
         }
         user.setState(State.UNVERIFIED);
         user.setRoles(Collections.singleton(Role.USER));
@@ -97,5 +99,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean checkPassword(User user, String password) {
         return passwordEncoder.matches(password, user.getPassword());
+    }
+
+    @Override
+    public boolean checkPasswordConfirm(String password, String passwordConfirm){
+        return (!passwordConfirm.isEmpty() && passwordConfirm.equals(password));
     }
 }
