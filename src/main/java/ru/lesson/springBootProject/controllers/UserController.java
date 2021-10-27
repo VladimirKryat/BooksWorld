@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ru.lesson.springBootProject.models.Role;
@@ -17,6 +18,8 @@ import ru.lesson.springBootProject.services.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -83,32 +86,70 @@ public class UserController {
     public String getProfile(Model model,
                              @AuthenticationPrincipal UserDetailsImpl userDetails,
                              @RequestParam(value = "message", required = false) String message
-                             ){
+    ){
         model.addAttribute("user",userDetails.getUser());
         model.addAttribute("message",message);
         return "profile";
     }
     @PostMapping("/profile")
     public ModelAndView saveProfile(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                    User newUser,
-                                    @RequestParam String oldPassword,
+                                    @Valid User newUser,
+                                    BindingResult bindingResult,
+                                    @RequestParam String newPassword,
+                                    @RequestParam String passwordConfirm,
                                     HttpServletRequest req,
-                                    Map<String,Object> model
-                              ){
+                                    Model model
+    ){
         User oldUser = userDetails.getUser();
-        if (userService.checkPassword(oldUser, oldPassword)){
-            if (newUser.getEmail()!=null&&!newUser.getEmail().equals(oldUser.getEmail())){
-                model.put("message", "Confirm email before login, please");
-            }
-            User user = userService.change(oldUser, newUser);
-//            выполняем logout
-            req.getSession(false).invalidate();
-            System.out.println(req.getHeader("Referer"));
-            SecurityContextHolder.clearContext();
-            return new ModelAndView("redirect:/login",model);
+        //валидируем новый пароль и его подтверждение если он введён
+        boolean isValidPasswordConfirm=true;
+        boolean isValidNewPassword = true;
+        if (newPassword!=null&&!newPassword.strip().isEmpty()) {
+            isValidNewPassword = newPassword.strip().length() >= 4 &&
+                    newPassword.strip().length() <= 20;
+            isValidPasswordConfirm = userService.checkPasswordConfirm(newPassword,passwordConfirm);
         }
-        model.put("message","Incorrect password");
-        return new ModelAndView("redirect:/user/profile",model);
+        boolean isValidPassword = userService.checkPassword(oldUser,newUser.getPassword());
+        //возвращаемся в редактирование профиля если:
+        //ошибки валидации согласно аннотациям user
+        //если старый пароль не верен
+        //если новый пароль введён и не совпадает с confirm или не соответствует требованию длинны
+        if (bindingResult.hasErrors()||!isValidPasswordConfirm||!isValidPassword||!isValidNewPassword){
+            //если пользователь не ввёл новый пароль, а остальные
+            if (!isValidPasswordConfirm)
+                model.addAttribute("passwordConfirmError", "Password confirmation failed");
+            if (!isValidPassword)
+                model.addAttribute("passwordError","Password not correct");
+            if (!isValidNewPassword)
+                model.addAttribute("newPasswordError", "Password length must be from 4 to 100");
+            model.mergeAttributes(ControllerUtils.getErrorMap(bindingResult));
+            //если необходимые(not empty) значения затёрты восстанавливаем их
+            if (newUser.getEmail()==null||newUser.getEmail().strip().isEmpty()){
+                newUser.setEmail(oldUser.getEmail());
+            }
+            if (newUser.getUsername()==null||newUser.getUsername().strip().isEmpty()){
+                newUser.setUsername(oldUser.getUsername());
+            }
+            //передаём значения для автозаполнения
+            model.addAttribute("user",newUser);
+            return new ModelAndView("profile",model.asMap());
+        }
+        //если изменён email выводим сообщение, что нужно его подтвердить
+        if (newUser.getEmail()!=null&&!newUser.getEmail().equals(oldUser.getEmail())){
+            model.addAttribute("message", "Confirm email before login, please");
+        }
+        //нельзя брать isValidNewPassword как условие сохранения нового пароля,
+        //так как пользователь может не вводить новый пароль
+        if (newPassword!=null&&!newPassword.strip().isEmpty()){
+            newUser.setPassword(newPassword.strip());
+        }
+        User user = userService.change(oldUser, newUser);
+//            выполняем logout
+        System.out.println("Referer link: "+req.getHeader("Referer"));
+        req.getSession(false).invalidate();
+        SecurityContextHolder.clearContext();
+        return new ModelAndView("redirect:/",model.asMap());
+
     }
 
 }

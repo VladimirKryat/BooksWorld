@@ -9,24 +9,56 @@
             </h4>
             <div class="form-group row my-0 py-0">
                 <div class="form-group mr-1">
-                    <input type="text" value="${user.username}" name="username" placeholder="Login:${user.username}">
-                    <small class="form-text text-muted">Login must be unique</small>
+                    <input type="text" class="form-control ${(usernameError??)?string('is-invalid','')}"
+                           value="${user.username!''}" name="username" placeholder="Login:">
+                    <#if usernameError??>
+                        <small class="form-text text-muted invalid-feedback">${usernameError}</small>
+                    </#if>
                 </div>
                 <div class="form-group">
-                    <input type="email" value="${(user.email)!''}" id="email" name="email" placeholder="Email:${(user.email)!''}">
-                    <small class="form-text text-muted">Email</small>
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="form-group mr-1 has-validation">
-                    <input type="text" name="oldPassword" <#if message??>class="form-control is-invalid"</#if>  placeholder="Password:">
-                    <small class="form-text text-muted">Input Password for change user info</small>
-                </div>
-                <div class="form-group">
-                    <input type="text" name="password" placeholder="New Password:">
-                    <small id="passwordHelp" class="form-text text-muted">Must be 4-20 characters long.</small>
+                    <input type="email" class="form-control ${(emailError??)?string('is-invalid','')}"
+                           value="${(user.email)!''}" id="email"
+                           name="email" placeholder="Email:">
+                    <#if emailError??>
+                        <small class="form-text text-muted invalid-feedback">${emailError}</small>
+                    </#if>
                 </div>
 
+                    <#if emailError??>
+                        <div class="invalid-feedback">${emailError}</div>
+                    </#if>
+
+            </div>
+            <div class="form-group row my-0 py-0">
+                <div class="form-group mr-1">
+                    <input type="text" name="password" class="form-control ${(passwordError??)?string('is-invalid','')}"  placeholder="Password:">
+                    <#if passwordError??>
+                        <small class="form-text text-muted invalid-feedback">${passwordError}</small>
+                    <#else >
+                        <small class="form-text text-muted">Input Password for change user info</small>
+                    </#if>
+                </div>
+            </div>
+            <div class="form-group row my-0 py-0">
+                <div class="form-group mr-1">
+                    <input type="text" class="form-control ${(newPasswordError??)?string('is-invalid','')}"
+                           name="newPassword" placeholder="New password:">
+                    <#if newPasswordError??>
+                        <small class="form-text text-muted invalid-feedback">${newPasswordError}</small>
+                    <#else >
+                        <small class="form-text text-muted">Must be 8-20 characters long.</small>
+                    </#if>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" class="form-control ${(passwordConfirmError??)?string('is-invalid','')}"
+                           name="passwordConfirm" placeholder="Repeat new password:">
+                    <#if passwordConfirmError??>
+                        <small class="form-text text-muted invalid-feedback">${passwordConfirmError}</small>
+                    <#else >
+                        <small class="form-text text-muted">Must be equals of new password</small>
+                    </#if>
+                </div>
             </div>
             <div class="form-group row">
                 <button type="submit" class="btn btn-primary mt-2">Save</button>

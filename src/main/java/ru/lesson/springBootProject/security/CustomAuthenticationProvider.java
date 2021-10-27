@@ -33,10 +33,15 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             if (!passwordEncoder.matches(password,principal.getPassword())){
                 throw new BadCredentialsException("Bad password");
             }
-            return new UsernamePasswordAuthenticationToken(principal,password,principal.getAuthorities());
+            if (!principal.isAccountNonLocked()) throw  new BadCredentialsException("Account banned");
+            if (!principal.isAccountNonExpired()) throw new BadCredentialsException("Account expired. Please confirm email");
+            if (principal.isEnabled()) {
+                return new UsernamePasswordAuthenticationToken(principal, password, principal.getAuthorities());
+            }
         }catch (UsernameNotFoundException usernameNotFoundException){
             throw new BadCredentialsException("Bad username");
         }
+        throw new BadCredentialsException("Unknown error. Try later, please");
     }
 
     @Override

@@ -28,7 +28,7 @@ public class User {
     @Column (name = "username", length = 50, unique = true, nullable = false)
     private String username;
     @NotEmpty(message = "Password cannot be empty")
-    @Size(min = 4, max=20, message = "Size password must be from 4 to 20")
+    @Size(min = 4, max=100, message = "Size password must be from 4 to 100")
     @Column (name = "password", length = 100, nullable = false)
     private String password;
 

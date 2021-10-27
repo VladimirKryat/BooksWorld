@@ -58,6 +58,7 @@ public class UserDetailsImpl implements UserDetails {
     }
 
 
+    //используется в parts/security
     public boolean isAdmin(){
         return this.getAuthorities().contains(Role.ADMIN);
     }
