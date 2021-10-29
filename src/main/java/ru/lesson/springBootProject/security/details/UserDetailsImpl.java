@@ -6,9 +6,10 @@ import ru.lesson.springBootProject.models.Role;
 import ru.lesson.springBootProject.models.State;
 import ru.lesson.springBootProject.models.User;
 
+import java.io.Serializable;
 import java.util.Collection;
 
-public class UserDetailsImpl implements UserDetails {
+public class UserDetailsImpl implements UserDetails, Serializable {
     private User user;
 
     public User getUser() {
