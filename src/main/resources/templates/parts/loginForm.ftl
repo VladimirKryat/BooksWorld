@@ -63,6 +63,11 @@
                     </div>
                 </#if>
             </div>
+        <#else >
+            <div class="form-group col-sm-3">
+                <label for="remember-me" class="form-check-label mr-4">Remember me</label>
+                <input type="checkbox" class="form-check-input" id="remember-me" name="remember-me" checked>
+            </div>
         </#if>
 
         <div class="form-group col-sm-3">

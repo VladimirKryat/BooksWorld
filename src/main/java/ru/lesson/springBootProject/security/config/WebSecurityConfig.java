@@ -1,6 +1,7 @@
 package ru.lesson.springBootProject.security.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -9,7 +10,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import ru.lesson.springBootProject.services.UserServiceImpl;
+
+import javax.sql.DataSource;
+
 //аннотация EnableGlobalMethodSecurity позволяет включить проверку ролей
 @Configuration
 @EnableWebSecurity
@@ -21,6 +27,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private AuthenticationProvider authenticationProvider;
+    @Autowired
+    private DataSource dataSource;
 
     //добавили раздачу статиков всем
     @Override
@@ -29,15 +37,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                     .antMatchers("/","/signup","/static/**","/activate/*").permitAll()
                     .anyRequest().authenticated()
-                .and()
-                    .formLogin()
+                    .and()
+                .formLogin()
                     .loginPage("/login")
                     .permitAll()
                     .defaultSuccessUrl("/comment")
-                .and()
-                    .rememberMe()
-                .and()
-                    .logout()
+                    .and()
+                .rememberMe()
+                    .rememberMeParameter("remember-me")
+                    .tokenRepository(tokenRepository())
+                    .and()
+                .logout()
                     .logoutUrl("/logout")
                     .logoutSuccessUrl("/")
                     .permitAll()
@@ -51,5 +61,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         /*auth.userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder);*/
         auth.authenticationProvider(authenticationProvider);
+    }
+    @Bean
+    public PersistentTokenRepository tokenRepository(){
+        //SpringBoot repository для взаимодействия с таблицей токенов в БД
+        //SpringSecurity сама сохраняет данные в таблицу persistent_logins
+        JdbcTokenRepositoryImpl tokenRepository=new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
+        return tokenRepository;
     }
 }
