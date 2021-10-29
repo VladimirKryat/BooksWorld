@@ -55,7 +55,16 @@
                     <div class="invalid-feedback">${passwordConfirmError}</div>
                 </#if>
             </div>
+            <div class="form-group col-sm-3">
+                <div class="g-recaptcha" data-sitekey="6LeSTwEdAAAAAEFsapKhdZJVn_82gXWDbZfC2rpc"></div>
+                <#if captchaError??>
+                    <div class="alert alert-danger" role="alert">
+                        ${captchaError}
+                    </div>
+                </#if>
+            </div>
         </#if>
+
         <div class="form-group col-sm-3">
             <button type="submit" class="btn btn-primary">Submit</button>
             <a href="${linkPath}" class="btn btn-primary">${linkName}</a>

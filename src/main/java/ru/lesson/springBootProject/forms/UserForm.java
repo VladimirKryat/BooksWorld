@@ -1,7 +1,6 @@
 package ru.lesson.springBootProject.forms;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.lesson.springBootProject.models.User;

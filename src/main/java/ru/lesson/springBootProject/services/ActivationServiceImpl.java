@@ -7,7 +7,6 @@ import ru.lesson.springBootProject.models.Activation;
 import ru.lesson.springBootProject.models.User;
 import ru.lesson.springBootProject.repositories.ActivationRepository;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
