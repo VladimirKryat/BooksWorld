@@ -24,6 +24,9 @@
                     <div class="custom-file">
                         <input type="file" class="file-path"  id="customFileLangHTML" name="file">
                     </div>
+                    <#if fileError??>
+                        <div class="invalid-feedback">${fileError}</div>
+                    </#if>
                 </div>
                 <div class="form-group" id = "radioStars">
 

@@ -47,8 +47,9 @@ public class CommentController {
             Model model,
             @RequestParam("file") MultipartFile file
     ){
-
+        boolean isCorrect = true;
         if (bindingResult.hasErrors()){
+            isCorrect=false;
             //преобразуем ошибки в мапу (название поля+Error,message)
             Map<String, String> errorMap = ControllerUtils.getErrorMap(bindingResult);
             model.mergeAttributes(errorMap);
@@ -67,12 +68,18 @@ public class CommentController {
                     file.transferTo(new File(uploadPath + "/" + resultFilename));
                     comment.setFilename(resultFilename);
                 } catch (IOException e) {
+                    isCorrect=false;
+                    model.addAttribute("fileError",e.getMessage());
+                    model.addAttribute("comment",comment);
                     e.printStackTrace();
                 }
             }
-            comment.setAuthor(userDetails.getUser());
-            commentRepository.save(comment);
-            model.addAttribute("comment",null);
+            //проверяем, что файл сохранился без исключений
+            if (isCorrect) {
+                comment.setAuthor(userDetails.getUser());
+                commentRepository.save(comment);
+                model.addAttribute("comment", null);
+            }
         }
         Iterable<CommentForm> comments = commentRepository.findAll().stream()
                 .map(x-> CommentForm.from(x)).
