@@ -1,7 +1,9 @@
 <#macro addCommentForm path>
-    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-        Add comment
-    </a>
+    <#if !comment??>
+        <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+            Add comment
+        </a>
+    </#if>
     <div class="collapse <#if comment??>show</#if>" id="collapseExample">
 
         <form method="post" action="${path}" enctype="multipart/form-data">
@@ -14,7 +16,7 @@
                                     (condition)?string(trueExpression,falseExpression) string означает, что нужно привести true/falseExpression к string
                     -->
                     <#--Таким образом получаем message валидации модели если произошла ошибка валидации-->
-                    <textarea type="text" class="form-control ${(textError??)?string('is-invalid','')}" type="text" rows="3" name="text" value="<#if comment??>${comment.text!"TEXT"}<#else>Edit text..</#if>"></textarea>
+                    <textarea type="text" class="form-control ${(textError??)?string('is-invalid','')}" type="text" rows="3" name="text" ><#if comment??>${comment.text!"TEXT"}<#else>Edit text..</#if></textarea>
                     <#if textError??>
                         <div class="invalid-feedback">${textError}</div>
                     </#if>
@@ -34,10 +36,9 @@
                     <#assign starsValue=5>
                     <#if comment??>
                         <#if comment.stars??>
-                            starsValue=comment.stars
+                              <#assign starsValue=comment.stars>
                         </#if>
                     </#if>
-                    <#assign starsValue=5>
                     <div class="form-check form-check-inline">
                         <label class="form-check-label ${(starsError??)?string('is-invalid','')}" for="inlineRadio1">Stars:</label>
                         <#if starsError??>
@@ -67,13 +68,18 @@
 
                 </div>
                 <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                <#if comment??>
+                    <input type="hidden" name="commentId" value="${comment.commentId}"/>
+                </#if>
+
                 <!--        <div><label for="remember-me"> <input type="checkbox" id="remember-me" name="remember-me">Запомнить меня</label><br/>-->
             </div>
-            <button type="submit" class="btn btn-success mb-3">Добавить</button>
+            <button type="submit" class="btn btn-success mb-3">Сохранить</button>
         </form>
     </div>
 </#macro>
 <#macro listCommentCard>
+    <#include "security.ftl">
     <div class="card-columns">
         <#list comments as commentItem>
             <div class="card my-3" style="width: 18rem;">
@@ -82,14 +88,27 @@
                 </#if>
                 <div class="card-body">
                     <h5 class="card-title">
-                        ${(commentItem.author.username)!'Guest'}
+                        <#if commentItem.author??>
+                            <a href="/userComment/${commentItem.author.userId}"> ${(commentItem.author.username)}</a>
+                        <#else >
+                            Guest
+                        </#if>
+
                     </h5>
                     <h6 class="card-subtitle mb-2 text-muted">
                         ${commentItem.starsByShape()}
                     </h6>
-                    <p class="card-text">${commentItem.text}</p>
+                    <p class="card-text">
+                        <#if commentItem.author?? && commentItem.author.userId==userId>
+                            <a href="/userComment/${commentItem.author.userId}/${commentItem.commentId}">${commentItem.text}</a>
+                        <#else >
+                            ${commentItem.text}
+                        </#if>
+                    </p>
+
                 </div>
             </div>
         </#list>
     </div>
 </#macro>
+

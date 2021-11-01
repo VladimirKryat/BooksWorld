@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 
 
 @Data
@@ -38,4 +39,15 @@ public class Comment {
 
     @Column(name = "filename")
     private String filename;
+
+    public String starsByShape(){
+        if(stars!=null){
+            char[] chars = new char[this.stars];
+            Arrays.fill(chars,'\u2605');
+            return new String(chars);
+        }
+        else {
+            return "";
+        }
+    }
 }

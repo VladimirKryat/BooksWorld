@@ -8,6 +8,7 @@ known = Session.SPRING_SECURITY_CONTEXT??
     <#assign
     <#--        получим объект User если он авторизован в SpringSecurity (principal - UserDetails)-->
     user = Session.SPRING_SECURITY_CONTEXT.authentication.principal.getUser()
+    userId = user.getUserId()
     name = Session.SPRING_SECURITY_CONTEXT.authentication.principal.getUsername()
     isAdmin = Session.SPRING_SECURITY_CONTEXT.authentication.principal.isAdmin()
     >
@@ -16,5 +17,6 @@ known = Session.SPRING_SECURITY_CONTEXT??
     <#--            значения заглушки-->
     name = "unknown"
     isAdmin = false
+    userId = -1
     >
 </#if>

@@ -1,9 +1,13 @@
 package ru.lesson.springBootProject.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.*;
+import org.springframework.security.web.server.authentication.logout.SecurityContextServerLogoutHandler;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,6 +19,7 @@ import ru.lesson.springBootProject.models.User;
 import ru.lesson.springBootProject.security.details.UserDetailsImpl;
 import ru.lesson.springBootProject.services.UserService;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Arrays;
@@ -142,9 +147,13 @@ public class UserController {
         }
         User user = userService.change(oldUser, newUser);
 //            выполняем logout
-        System.out.println("Referer link: "+req.getHeader("Referer"));
-        req.getSession(false).invalidate();
-        SecurityContextHolder.clearContext();
+//        System.out.println("Referer link: "+req.getHeader("Referer"));
+        try {
+            req.logout();
+        } catch (ServletException e) {
+            e.printStackTrace();
+        }
+
         return new ModelAndView("redirect:/",model.asMap());
 
     }
