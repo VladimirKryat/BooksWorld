@@ -37,7 +37,6 @@ public class CommentForm {
         if(stars!=null){
             char[] chars = new char[this.stars];
             Arrays.fill(chars,'\u2605');
-            System.out.println(new String(chars));
             return new String(chars);
         }
         else {
