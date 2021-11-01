@@ -1,6 +1,7 @@
 package ru.lesson.springBootProject.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.lesson.springBootProject.exceptions.ActivationServiceException;
 import ru.lesson.springBootProject.models.Activation;
@@ -15,6 +16,8 @@ public class ActivationServiceImpl implements ActivationService {
     private MailSender mailSender;
     @Autowired
     private ActivationRepository activationRepository;
+    @Value("${hostname}")
+    private String hostname;
     @Override
     public void newActivation(User user) {
         Activation activation = new Activation();
@@ -24,8 +27,9 @@ public class ActivationServiceImpl implements ActivationService {
         if (user.getEmail()!=null && !user.getEmail().isEmpty()){
             String message =String.format(
                     "Hello, %s! \n" +
-                            "Welcome to SpringBootProject. Please, visit next link: http://localhost:8080/activate/%s",
+                            "Welcome to SpringBootProject. Please, visit next link: http://%s/activate/%s",
                     user.getUsername(),
+                    hostname,
                     activation.getActivationCode()
             );
             mailSender.send(user.getEmail(), "Confirm email", message);
