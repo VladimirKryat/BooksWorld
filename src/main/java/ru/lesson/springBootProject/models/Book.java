@@ -23,6 +23,8 @@ public class Book implements Serializable {
     private Long bookId;
     @Column(nullable = false)
     private String title;
+    @Column(length = 2048)
+    private String description;
     @ManyToMany(fetch = FetchType.EAGER,
             targetEntity = Author.class)
     @JoinTable(name="author_book",

@@ -22,6 +22,18 @@
                     <a class="nav-link" href="/user">User List</a>
                 </li>
             </#if>
+            <#if isManager>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+                        Manager features
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="/manager/bookEditor">Book editor</a>
+                        <a class="dropdown-item" href="/manager/authorEditor">Author editor</a>
+                        <a class="dropdown-item" href="/manager/bookList">Book list</a>
+                    </div>
+                </li>
+            </#if>
         </ul>
 
         <div class="navbar-nav nav justify-content-end mr-5">

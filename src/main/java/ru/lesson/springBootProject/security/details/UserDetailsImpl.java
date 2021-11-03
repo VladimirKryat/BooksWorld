@@ -63,5 +63,6 @@ public class UserDetailsImpl implements UserDetails, Serializable {
     public boolean isAdmin(){
         return this.getAuthorities().contains(Role.ADMIN);
     }
+    public boolean isManager(){ return this.getAuthorities().contains(Role.MANAGER);}
 
 }

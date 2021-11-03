@@ -11,12 +11,15 @@ known = Session.SPRING_SECURITY_CONTEXT??
     userId = user.getUserId()
     name = Session.SPRING_SECURITY_CONTEXT.authentication.principal.getUsername()
     isAdmin = Session.SPRING_SECURITY_CONTEXT.authentication.principal.isAdmin()
+    isManager = Session.SPRING_SECURITY_CONTEXT.authentication.principal.isManager()
+
     >
 <#else >
     <#assign
     <#--            значения заглушки-->
     name = "unknown"
     isAdmin = false
+    isManager = false
     userId = -1
     >
 </#if>

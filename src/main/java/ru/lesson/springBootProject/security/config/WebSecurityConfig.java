@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import ru.lesson.springBootProject.models.Role;
 import ru.lesson.springBootProject.services.UserServiceImpl;
 
 import javax.sql.DataSource;
@@ -36,6 +37,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                     .antMatchers("/","/signup","/static/**","/activate/*","/img/**").permitAll()
+                    .antMatchers("/user").hasAuthority(Role.ADMIN.name())
+                    .antMatchers("/manager/**").hasAuthority(Role.MANAGER.name())
                     .anyRequest().authenticated()
                     .and()
                 .formLogin()
