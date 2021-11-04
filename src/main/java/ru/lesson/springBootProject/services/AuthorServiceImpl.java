@@ -9,6 +9,7 @@ import ru.lesson.springBootProject.repositories.AuthorRepository;
 import ru.lesson.springBootProject.repositories.BookRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AuthorServiceImpl implements AuthorService{
@@ -24,7 +25,15 @@ public class AuthorServiceImpl implements AuthorService{
 
     @Override
     public Author save(Author author){
-        return authorRepository.save(author);
+        //если автор с таким именем и датой рождения существует, сохраняем данные на его место
+        Optional<Author> pretendentAuthor = authorRepository.findAuthorByNameAndBirthday(author.getName(),author.getBirthday());
+        if (pretendentAuthor.isPresent()){
+            author.setAuthorId(pretendentAuthor.get().getAuthorId());
+            return authorRepository.save(author);
+        }
+        else {
+            return authorRepository.save(author);
+        }
     }
 
     @Transactional
@@ -39,5 +48,15 @@ public class AuthorServiceImpl implements AuthorService{
     public List<Author> findAll(){
         return authorRepository.findAll();
     }
+
+    @Override
+    public boolean checkUnique(Author author){
+        return authorRepository.existsAuthorByNameAndBirthday(author.getName(),author.getBirthday());
+    }
+    @Override
+    public Optional<Author> findByNameAndBirthday(Author author){
+        return authorRepository.findAuthorByNameAndBirthday(author.getName(),author.getBirthday());
+    }
+
 
 }

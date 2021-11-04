@@ -1,8 +1,11 @@
 package ru.lesson.springBootProject.models;
 
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
@@ -21,10 +24,14 @@ public class Book implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "book_id")
     private Long bookId;
+    @NotEmpty(message = "Title can't be empty")
+    @Length(max=255, message = "Too long title")
     @Column(nullable = false)
     private String title;
+    @Length(max = 2048, message = "Too long description(more than 2kB)")
     @Column(length = 2048)
     private String description;
+    @NotEmpty(message = "Author can't be empty")
     @ManyToMany(fetch = FetchType.EAGER,
             targetEntity = Author.class)
     @JoinTable(name="author_book",

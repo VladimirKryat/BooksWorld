@@ -3,6 +3,7 @@ package ru.lesson.springBootProject.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.lesson.springBootProject.models.Book;
 import ru.lesson.springBootProject.services.AuthorService;
 import ru.lesson.springBootProject.services.BookService;
+
+import javax.validation.Valid;
 
 @Controller
 
@@ -29,18 +32,24 @@ public class BookController {
             model.addAttribute("book", book);
         }
 
-        model.addAttribute("authors",authorService.findAll());
+        model.addAttribute("allAuthors",authorService.findAll());
         return "bookEditor";
     }
     @PostMapping("/bookEditor")
     public String saveBookEditor(
-            Book book,
+            @Valid Book book,
+            BindingResult bindingResult,
             Model model
     ){
-        if (book!=null){
-            bookService.save(book);
-            model.addAttribute("message","Book save success");
+        if (bindingResult.hasErrors()){
+            model.mergeAttributes(ControllerUtils.getErrorMap(bindingResult));
+            model.addAttribute("book",book);
+            model.addAttribute("allAuthors",authorService.findAll());
+            return "bookEditor";
         }
+        bookService.save(book);
+        model.addAttribute("book",null);
+        model.addAttribute("message","Book save success");
         return "main";
     }
 
