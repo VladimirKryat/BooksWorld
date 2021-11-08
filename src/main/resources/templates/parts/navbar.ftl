@@ -16,6 +16,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/userComment/${userId}">My Comment</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/mySubscriptions">My subscriptions</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/bookList">Book list</a>
+                </li>
             </#if>
             <#if isAdmin>
                 <li class="nav-item">
@@ -30,7 +36,6 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item" href="/manager/bookEditor">Book editor</a>
                         <a class="dropdown-item" href="/manager/authorEditor">Author editor</a>
-                        <a class="dropdown-item" href="/manager/bookList">Book list</a>
                     </div>
                 </li>
             </#if>

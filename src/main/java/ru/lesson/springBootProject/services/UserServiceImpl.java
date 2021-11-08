@@ -5,9 +5,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.lesson.springBootProject.exceptions.ActivationServiceException;
+import ru.lesson.springBootProject.exceptions.AuthorServiceException;
 import ru.lesson.springBootProject.exceptions.UserServiceException;
 import ru.lesson.springBootProject.exceptions.UsernameNotUniqueException;
+import ru.lesson.springBootProject.models.Author;
 import ru.lesson.springBootProject.models.Role;
 import ru.lesson.springBootProject.models.State;
 import ru.lesson.springBootProject.models.User;
@@ -25,6 +28,8 @@ public class UserServiceImpl implements UserService {
     private ActivationService activationService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private AuthorService authorService;
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
@@ -105,4 +110,47 @@ public class UserServiceImpl implements UserService {
     public boolean checkPasswordConfirm(String password, String passwordConfirm){
         return (!passwordConfirm.isEmpty() && passwordConfirm.equals(password));
     }
+
+    @Transactional
+    @Override
+    public User getSubscriptions(User user) throws UserServiceException{
+        User result = userRepository.findByUsername(user.getUsername()).orElseThrow(()->new UserServiceException("Invalid user data"));
+        result.getSubscriptions().size();
+        return result;
+    }
+
+//    добавляем подписку и в set у автора и у пользователя, для сохранения синхронизации
+    @Transactional
+    @Override
+    public User addSubscriptions(User user, Author author)throws UserServiceException{
+        User userResult = userRepository.findById(user.getUserId()).orElseThrow(()->new UserServiceException("Invalid user data"));
+        try{
+            Author authorResult = authorService.getSubscriptions(author);
+            if (!userResult.getSubscriptions().contains(authorResult)){
+                userResult.getSubscriptions().add(authorResult);
+                authorResult.getSubscriptions().add(userResult);
+                userResult = userRepository.save(userResult);
+            }
+            return userResult;
+        } catch (AuthorServiceException authorServiceException){
+            throw new UserServiceException(authorServiceException);
+        }
+    }
+    @Transactional
+    @Override
+    public User removeSubscriptions(User user, Author author)throws UserServiceException{
+        User userResult = userRepository.findById(user.getUserId()).orElseThrow(()->new UserServiceException("Invalid user data"));
+        try{
+            Author authorResult = authorService.getSubscriptions(author);
+            if (userResult.getSubscriptions().contains(authorResult)){
+                userResult.getSubscriptions().remove(authorResult);
+                authorResult.getSubscriptions().remove(userResult);
+                userResult = userRepository.save(userResult);
+            }
+            return userResult;
+        } catch (AuthorServiceException authorServiceException){
+            throw new UserServiceException(authorServiceException);
+        }
+    }
+
 }

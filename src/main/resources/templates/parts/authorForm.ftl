@@ -38,6 +38,13 @@
             </#if>
         </div>
         <div class="form-group col-sm-3">
+            <label for="biography">Краткая биография</label>
+            <textarea class="form-control ${(biographyError??)?string('is-invalid','')}" name="biography" rows="4"><#if author??>${author.biography?if_exists}</#if></textarea>
+            <#if biographyError??>
+                <div class="invalid-feedback">${biographyError}</div>
+            </#if>
+        </div>
+        <div class="form-group col-sm-3">
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>
         <input type="hidden" name="_csrf" value="${_csrf.token}"/>

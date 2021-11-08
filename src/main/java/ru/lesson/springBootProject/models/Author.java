@@ -1,6 +1,7 @@
 package ru.lesson.springBootProject.models;
 
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 
@@ -35,10 +36,15 @@ public class Author implements Serializable {
     @Column(name = "date_of_death")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dateOfDeath;
+    @Length(max = 3072, message = "Too long biography (more than 3kB)")
+    private String biography;
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToMany(mappedBy = "authors",
             fetch = FetchType.LAZY,targetEntity = Book.class,
             cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     private Set<Book> books=new HashSet<>();
+
+    @ManyToMany(mappedBy = "subscriptions",targetEntity = User.class, fetch = FetchType.LAZY)
+    private Set<User> subscriptions;
 }

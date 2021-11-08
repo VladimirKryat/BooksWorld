@@ -1,6 +1,7 @@
 package ru.lesson.springBootProject.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -9,17 +10,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.lesson.springBootProject.models.Author;
+import ru.lesson.springBootProject.models.User;
+import ru.lesson.springBootProject.security.details.UserDetailsImpl;
 import ru.lesson.springBootProject.services.AuthorService;
+import ru.lesson.springBootProject.services.UserService;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
 
 @Controller
-@RequestMapping("/manager")
+@RequestMapping
 public class AuthorController {
     @Autowired
     private AuthorService authorService;
-    @GetMapping("/authorEditor")
+    @Autowired
+    private UserService userService;
+    @GetMapping("/manager/authorEditor")
     public String getAuthorEditor(
             @RequestParam(name="author", required = false) Author author,
             Model model
@@ -30,7 +36,7 @@ public class AuthorController {
         }
         return "authorEditor";
     }
-    @PostMapping("/authorEditor")
+    @PostMapping("/manager/authorEditor")
     public String setAuthor(
             @Valid Author author,
             BindingResult bindingResult,
@@ -68,5 +74,17 @@ public class AuthorController {
         authorService.save(author);
         model.addAttribute("message", "Author saved");
         return "main";
+    }
+
+    @GetMapping("/authorInfo")
+    public String getAuthorInfo(
+            @RequestParam Author author,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            Model model
+    ){
+        User user = userService.getSubscriptions(userDetails.getUser());
+        model.addAttribute("author",author);
+        model.addAttribute("isSubscription", user.getSubscriptions().contains(author));
+        return "authorInfo";
     }
 }

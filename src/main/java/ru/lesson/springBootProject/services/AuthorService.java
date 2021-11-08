@@ -17,4 +17,7 @@ public interface AuthorService {
     boolean checkUnique(Author author);
 
     Optional<Author> findByNameAndBirthday(Author author);
+
+    @Transactional
+    Author getSubscriptions(Author author) throws AuthorServiceException;
 }

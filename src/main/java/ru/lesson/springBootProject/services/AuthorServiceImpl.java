@@ -40,7 +40,7 @@ public class AuthorServiceImpl implements AuthorService{
     @Override
     public Author findByIdWithBooks(Author author) throws AuthorServiceException {
         Author result = authorRepository.findById(author.getAuthorId()).orElseThrow(()->new AuthorServiceException("Author not found by id"));
-        result.getBooks();
+        result.getBooks().isEmpty();
         return result;
     }
 
@@ -56,6 +56,15 @@ public class AuthorServiceImpl implements AuthorService{
     @Override
     public Optional<Author> findByNameAndBirthday(Author author){
         return authorRepository.findAuthorByNameAndBirthday(author.getName(),author.getBirthday());
+    }
+
+
+    @Transactional
+    @Override
+    public Author getSubscriptions(Author author) throws AuthorServiceException{
+        Author result = authorRepository.findById(author.getAuthorId()).orElseThrow(() -> new AuthorServiceException("Author not found by Id"));
+        result.getSubscriptions().isEmpty();
+        return result;
     }
 
 

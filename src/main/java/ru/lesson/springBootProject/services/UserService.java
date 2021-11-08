@@ -1,6 +1,9 @@
 package ru.lesson.springBootProject.services;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.transaction.annotation.Transactional;
+import ru.lesson.springBootProject.exceptions.UserServiceException;
+import ru.lesson.springBootProject.models.Author;
 import ru.lesson.springBootProject.models.User;
 
 import java.util.List;
@@ -18,4 +21,13 @@ public interface UserService extends UserDetailsService {
         return user.getPassword().equals(password);
     }
     boolean checkPasswordConfirm(String password, String passwordConfirm);
+
+    @Transactional
+    User getSubscriptions(User user) throws UserServiceException;
+
+    @Transactional
+    User addSubscriptions(User user, Author author)throws UserServiceException;
+
+    @Transactional
+    User removeSubscriptions(User user, Author author)throws UserServiceException;
 }

@@ -16,14 +16,13 @@ import javax.validation.Valid;
 
 @Controller
 
-@RequestMapping("/manager")
 public class BookController {
 
     @Autowired
     private BookService bookService;
     @Autowired
     private AuthorService authorService;
-    @GetMapping("/bookEditor")
+    @GetMapping("/manager/bookEditor")
     public String getBookEditor(
             @RequestParam (name="book", required = false) Book book,
             Model model
@@ -35,7 +34,7 @@ public class BookController {
         model.addAttribute("allAuthors",authorService.findAll());
         return "bookEditor";
     }
-    @PostMapping("/bookEditor")
+    @PostMapping("/manager/bookEditor")
     public String saveBookEditor(
             @Valid Book book,
             BindingResult bindingResult,

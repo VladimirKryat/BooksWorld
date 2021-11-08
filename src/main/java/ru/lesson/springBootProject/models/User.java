@@ -7,6 +7,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -54,6 +55,16 @@ public class User implements Serializable {
     //указываем, хранить значение в String, а не Ordinal(порядковый номер в enum)
     @Enumerated(value = EnumType.STRING)
     private Set<Role> roles;
+
+    @ManyToMany(targetEntity = Author.class, cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+    @JoinTable(
+            name = "user_subscription_author",
+            joinColumns = {@JoinColumn(name="user_id")},
+            inverseJoinColumns = @JoinColumn(name="author_id")
+    )
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<Author> subscriptions = new HashSet<>();
 
 
 }
