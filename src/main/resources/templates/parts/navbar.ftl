@@ -50,7 +50,7 @@
                 </#if>
                 <form method="post" action="/logout">
                     <button type="submit" class="btn btn-light nav-link">Sign Out</button>
-                    <input type="hidden" name="_csrf" value="${_csrf.token}">
+                    <input type="hidden" name="_csrf" value="${_csrf.token}" />
                 </form>
             <#else >
                 <a class="btn btn-light nav-link" href="/login">Log In</a>

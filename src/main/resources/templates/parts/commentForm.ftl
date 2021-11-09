@@ -16,7 +16,7 @@
                                     (condition)?string(trueExpression,falseExpression) string означает, что нужно привести true/falseExpression к string
                     -->
                     <#--Таким образом получаем message валидации модели если произошла ошибка валидации-->
-                    <textarea type="text" class="form-control ${(textError??)?string('is-invalid','')}" type="text" rows="3" name="text" ><#if comment??>${comment.text!"TEXT"}<#else>Edit text..</#if></textarea>
+                    <textarea class="form-control ${(textError??)?string('is-invalid','')}" type="text" rows="3" name="text" ><#if comment??>${comment.text!"TEXT"}<#else>Edit text..</#if></textarea>
                     <#if textError??>
                         <div class="invalid-feedback">${textError}</div>
                     </#if>
@@ -24,7 +24,7 @@
 
                 <div class="form-group col-sm-4 pl-0">
                     <div class="custom-file">
-                        <input type="file" class="file-path"  id="customFileLangHTML" name="file">
+                        <input type="file" class="file-path"  id="customFileLangHTML" name="file" />
                     </div>
                     <#if fileError??>
                         <div class="invalid-feedback">${fileError}</div>
@@ -46,30 +46,30 @@
                         </#if>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="stars" value=1 id="inlineRadio1" <#if starsValue==1>checked</#if>>
+                        <input class="form-check-input" type="radio" name="stars" value="1" id="inlineRadio1" <#if starsValue==1>checked="checked"</#if> />
                         <label class="form-check-label" for="inlineRadio1">1</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="stars" value=2 id="inlineRadio2" <#if starsValue==2>checked</#if>>
+                        <input class="form-check-input" type="radio" name="stars" value="2" id="inlineRadio2" <#if starsValue==2>checked="checked"</#if> />
                         <label class="form-check-label" for="inlineRadio2">2</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="stars" value=3 id="inlineRadio3" <#if starsValue==3>checked</#if>>
+                        <input class="form-check-input" type="radio" name="stars" value="3" id="inlineRadio3" <#if starsValue==3>checked="checked"</#if> />
                         <label class="form-check-label" for="inlineRadio3">3</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="stars" value=4 id="inlineRadio4" <#if starsValue==4>checked</#if>>
+                        <input class="form-check-input" type="radio" name="stars" value="4" id="inlineRadio4" <#if starsValue==4>checked="checked"</#if> />
                         <label class="form-check-label" for="inlineRadio4">4</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="stars" value=5 id="inlineRadio5" <#if starsValue==5>checked</#if>>
+                        <input class="form-check-input" type="radio" name="stars" value="5" id="inlineRadio5" <#if starsValue==5>checked="checked"</#if> />
                         <label class="form-check-label" for="inlineRadio5">5</label>
                     </div>
 
                 </div>
-                <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                <input type="hidden" name="_csrf" value="${_csrf.token}" />
                 <#if comment??>
-                    <input type="hidden" name="commentId" value="${comment.commentId}"/>
+                    <input type="hidden" name="commentId" value="${comment.commentId}" />
                 </#if>
 
                 <!--        <div><label for="remember-me"> <input type="checkbox" id="remember-me" name="remember-me">Запомнить меня</label><br/>-->
@@ -80,16 +80,16 @@
 </#macro>
 <#macro listCommentCard>
     <#include "security.ftl">
-    <div class="card-columns">
+    <div class="card-columns" id="idCardColumns">
         <#list comments as commentItem>
-            <div class="card my-3" style="width: 18rem;">
+            <div class="card my-3" style="width: 18rem;" data-id="${commentItem.commentId}">
                 <#if commentItem.filename??>
-                    <img class="card-img-top" src="/img/${commentItem.filename}">
+                    <img class="card-img-top" src="/img/${commentItem.filename}" />
                 </#if>
                 <div class="card-body">
                     <h5 class="card-title">
                         <#if commentItem.author??>
-                            <a href="/userComment/${commentItem.author.userId}"> ${(commentItem.author.username)}</a>
+                            <a href="/userComment/${commentItem.author.userId}">${(commentItem.author.username)}</a>
                         <#else >
                             Guest
                         </#if>
@@ -100,9 +100,9 @@
                     </h6>
                     <p class="card-text">
                         <#if commentItem.author?? && commentItem.author.userId==userId>
-                            <a href="/userComment/${commentItem.author.userId}/${commentItem.commentId}">${commentItem.text}</a>
+                            <a href="/userComment/${commentItem.author.userId}/${commentItem.commentId}">${commentItem.text!''}</a>
                         <#else >
-                            ${commentItem.text}
+                            ${commentItem.text!''}
                         </#if>
                     </p>
 

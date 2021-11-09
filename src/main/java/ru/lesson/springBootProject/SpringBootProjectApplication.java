@@ -1,4 +1,4 @@
-package ru.lesson.springBootProject.app;
+package ru.lesson.springBootProject;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
