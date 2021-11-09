@@ -67,5 +67,15 @@ public class AuthorServiceImpl implements AuthorService{
         return result;
     }
 
+    @Override
+    public Long countSubscribers(Long authorId){
+        return authorRepository.countSubscribers(authorId);
+    }
+
+    @Override
+    public Long countBook(Long authorId){
+        return authorRepository.countBook(authorId);
+    }
+
 
 }

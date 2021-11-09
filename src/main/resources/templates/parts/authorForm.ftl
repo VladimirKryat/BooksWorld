@@ -37,7 +37,7 @@
                 <div class="invalid-feedback">${dateOfDeathError}</div>
             </#if>
         </div>
-        <div class="form-group col-sm-3">
+        <div class="form-group col-sm-5">
             <label for="biography">Краткая биография</label>
             <textarea class="form-control ${(biographyError??)?string('is-invalid','')}" name="biography" rows="4"><#if author??>${author.biography?if_exists}</#if></textarea>
             <#if biographyError??>
@@ -52,4 +52,38 @@
             <input type="hidden" name="authorId" value="${author.authorId}"/>
         </#if>
     </form>
+</#macro>
+
+<#macro cardBody author>
+    <div class="card-body">
+        <h5 class="card-title">
+            ${author.name}
+        </h5>
+        <h6 class="card-subtitle mb-2 text-muted">
+            (${author.birthday} - ${author.dateOfDeath!"..."})
+        </h6>
+        <p class="card-text">
+            ${author.biography!""}
+        </p>
+        <#if countSubscribers??>
+            <h6 class="card-subtitle mb-2 text-muted">
+                Subscribers: ${countSubscribers}
+            </h6>
+        </#if>
+        <#if countBooksInShop??>
+            <h6 class="card-subtitle mb-2 text-muted">
+                Count publications: ${countBooksInShop}
+            </h6>
+        </#if>
+
+        <#if !isSubscription??>
+            <#assign isSubscription = true />
+        </#if>
+
+        <#if !isSubscription>
+            <a href="/subscribe/${author.authorId}" class="btn btn-outline-success">Subscribe</a>
+        <#else >
+            <a href="/unsubscribe?author=${author.authorId}" class="btn btn-outline-danger">Unsubscribe</a>
+        </#if>
+    </div>
 </#macro>

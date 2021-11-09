@@ -20,4 +20,8 @@ public interface AuthorService {
 
     @Transactional
     Author getSubscriptions(Author author) throws AuthorServiceException;
+
+    Long countSubscribers(Long authorId);
+
+    Long countBook(Long authorId);
 }

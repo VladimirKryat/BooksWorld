@@ -85,6 +85,8 @@ public class AuthorController {
         User user = userService.getSubscriptions(userDetails.getUser());
         model.addAttribute("author",author);
         model.addAttribute("isSubscription", user.getSubscriptions().contains(author));
+        model.addAttribute("countSubscribers",authorService.countSubscribers(author.getAuthorId()));
+        model.addAttribute("countBooksInShop",authorService.countBook(author.getAuthorId()));
         return "authorInfo";
     }
 }

@@ -26,18 +26,23 @@ public class Author implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "author_id")
     private Long authorId;
+
     @NotEmpty(message = "Name can't be empty")
     @Column(nullable = false)
     private String name;
+
     @NotNull(message = "Birthday can't be empty")
     @Column(nullable = false)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate birthday;
+
     @Column(name = "date_of_death")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dateOfDeath;
+
     @Length(max = 3072, message = "Too long biography (more than 3kB)")
     private String biography;
+
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToMany(mappedBy = "authors",
@@ -46,5 +51,5 @@ public class Author implements Serializable {
     private Set<Book> books=new HashSet<>();
 
     @ManyToMany(mappedBy = "subscriptions",targetEntity = User.class, fetch = FetchType.LAZY)
-    private Set<User> subscriptions;
+    private Set<User> subscriptions=new HashSet<>();
 }
