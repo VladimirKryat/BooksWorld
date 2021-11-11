@@ -6,7 +6,7 @@
     </#if>
     <div class="collapse <#if comment??>show</#if>" id="collapseExample">
 
-        <form method="post" action="${path}" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data">
             <div class="form-group">
 
                 <div class="form-group col-sm-4 pl-0 mt-3">
@@ -79,9 +79,10 @@
     </div>
 </#macro>
 <#macro listCommentCard>
+    <#import "pager.ftl" as pg>
     <#include "security.ftl">
     <div class="card-columns" id="idCardColumns">
-        <#list comments as commentItem>
+        <#list commentsPage.getContent() as commentItem>
             <div class="card my-3" style="width: 18rem;" data-id="${commentItem.commentId}">
                 <#if commentItem.filename??>
                     <img class="card-img-top" src="/img/${commentItem.filename}" />
@@ -89,7 +90,7 @@
                 <div class="card-body">
                     <h5 class="card-title">
                         <#if commentItem.author??>
-                            <a href="/userComment/${commentItem.author.userId}">${(commentItem.author.username)}</a>
+                            <a href="/comment/${commentItem.author.userId}">${(commentItem.author.username)}</a>
                         <#else >
                             Guest
                         </#if>
@@ -100,7 +101,7 @@
                     </h6>
                     <p class="card-text">
                         <#if commentItem.author?? && commentItem.author.userId==userId>
-                            <a href="/userComment/${commentItem.author.userId}/${commentItem.commentId}">${commentItem.text!''}</a>
+                            <a href="/comment/${commentItem.author.userId}/${commentItem.commentId}">${commentItem.text!''}</a>
                         <#else >
                             ${commentItem.text!''}
                         </#if>
@@ -110,5 +111,6 @@
             </div>
         </#list>
     </div>
+    <@pg.pager url commentsPage/>
 </#macro>
 

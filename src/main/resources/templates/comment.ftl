@@ -6,5 +6,7 @@
 
 <#--'★'-->
 <#--    отображаем карты комментариев-->
-        <@c.listCommentCard/>
+        <#if commentsPage??>
+                <@c.listCommentCard/>
+        </#if>
 </@p.page>

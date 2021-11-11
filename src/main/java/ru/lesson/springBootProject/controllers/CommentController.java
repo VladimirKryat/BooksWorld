@@ -2,6 +2,10 @@ package ru.lesson.springBootProject.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +19,7 @@ import ru.lesson.springBootProject.models.Comment;
 import ru.lesson.springBootProject.repositories.CommentRepository;
 import ru.lesson.springBootProject.security.details.UserDetailsImpl;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
@@ -30,13 +35,31 @@ public class CommentController {
     @Autowired
     private CommentRepository commentRepository;
 
-    @GetMapping("/comment")
-    public String getListComment(Map<String, Object> mapModel){
-        Iterable<Comment> comments = commentRepository.findAll();
-        mapModel.put("comments", comments);
+    @GetMapping(value = {"/comment","/comment/{userId}","/comment/{userId}/{commentId}"})
+    public String getListComment(
+            Map<String, Object> mapModel,
+            @PathVariable (name = "userId", required = false) Long userId,
+            @PathVariable (name = "commentId", required = false) Comment comment,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PageableDefault(sort = {"commentId"}, direction = Sort.Direction.ASC, size = 6) Pageable pageable,
+            HttpServletRequest request
+            ){
+        if (userId!=null && comment!=null){
+            mapModel.put("comment", comment);
+            return "comment";
+        }
+        Page<Comment> page;
+        if (userId!=null){
+            page = commentRepository.findAllByAuthor_UserId(userId,pageable);
+        }
+        else {
+            page = commentRepository.findAll(pageable);
+        }
+        mapModel.put("commentsPage",page);
+        mapModel.put("url", request.getRequestURL());
         return "comment";
     }
-    @PostMapping("/comment")
+    @PostMapping(value = {"/comment/{userId}","/comment"})
     public String addComment(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Valid Comment comment,
@@ -70,34 +93,16 @@ public class CommentController {
                 comment.setAuthor(userDetails.getUser());
                 commentRepository.save(comment);
                 model.addAttribute("comment", null);
+                return "redirect:/comment";
             }
         }
         Iterable<Comment> comments = commentRepository.findAll();
         model.addAttribute("comments", comments);
         return "comment";
     }
-    //отображение коментов пользователя
-    @GetMapping("/userComment/{userId}")
-    public String getUserComments(
-            @PathVariable(name="userId") Long user,
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            Model model
-    ){
-        model.addAttribute("comments",commentRepository.findAllByAuthor_UserId(user));
-        return "comment";
-    }
 
-    @GetMapping("/userComment/{userId}/{commentId}")
-    public String changeComment(
-            @PathVariable Long userId,
-            @PathVariable Long commentId,
-            Model model
-    ){
-        Comment comment = commentRepository.findById(commentId).get();
-        model.addAttribute("comment",comment);
-        return "userComment";
-    }
-    @PostMapping("/userComment/{userId}/{commentId}")
+
+    @PostMapping("/comment/{userId}/{commentId}")
     public String saveChangingComment(
             @PathVariable Long userId,
             @PathVariable (name = "commentId") Comment oldComment,
