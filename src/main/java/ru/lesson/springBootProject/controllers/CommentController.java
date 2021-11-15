@@ -24,13 +24,12 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import java.util.UUID;
 
 @Controller
 public class CommentController {
 
     //говорим чтобы Spring вытащил из property переменную
-    @Value("${upload.path}")
+    @Value("${upload.comment.img.path}")
     private String uploadPath;
     @Autowired
     private CommentService commentService;
@@ -79,9 +78,9 @@ public class CommentController {
         }
         else {
             //проверяем что имя файла задано
-            if (checkFilename(file)) {
+            if (ControllerUtils.checkFilename(file)) {
                 try {
-                    comment.setFilename(saveFileWithNewFilename(file));
+                    comment.setFilename(ControllerUtils.saveFileWithNewFilename(file,uploadPath));
                 } catch (IOException e) {
                     isCorrect=false;
                     model.addAttribute("fileError",e.getMessage());
@@ -124,9 +123,9 @@ public class CommentController {
         //если пользователь редактирует свой коммент, то сохраняем его
         if (oldComment.getAuthor().equals(userDetails.getUser())){
             //если добавлен новый файл
-            if (checkFilename(file)) {
+            if (ControllerUtils.checkFilename(file)) {
                 try {
-                    changeComment.setFilename(saveFileWithNewFilename(file));
+                    changeComment.setFilename(ControllerUtils.saveFileWithNewFilename(file,uploadPath));
                 } catch (IOException e) {
                     model.addAttribute("fileError",e.getMessage());
                     model.addAttribute("comment",changeComment);
@@ -150,20 +149,6 @@ public class CommentController {
         model.addAttribute("model",null);
         model.addAttribute("comments", commentService.findAllByAuthor(userDetails.getUser().getUserId(),pageable));
         return "comment";
-    }
-
-    private boolean checkFilename(MultipartFile file){
-        return file != null && !file.getOriginalFilename().isEmpty();
-    }
-    private String saveFileWithNewFilename(MultipartFile file) throws IOException{
-        File uploadDir = new File(uploadPath);
-        //проверяем наличие директории для загрузки
-        if (!uploadDir.exists()) {
-            uploadDir.mkdir();
-        }
-        String resultFilename = UUID.randomUUID().toString() + "." + file.getOriginalFilename();
-        file.transferTo(new File(uploadPath + "/" + resultFilename));
-        return resultFilename;
     }
 
 

@@ -39,6 +39,8 @@ public class Book implements Serializable {
             inverseJoinColumns = @JoinColumn(name="author_id", nullable = false))
     private Set<Author> authors=new HashSet<>();
 
+    private String filename;
+
     @Override
     public String toString() {
         return "Book{" +

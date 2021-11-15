@@ -53,7 +53,8 @@ public class AuthorController {
             isCorrectDateDeath=author.getDateOfDeath().isBefore(LocalDate.now());
         }
         //если обе даты корректно введены, проверяем их очерёдность
-        if (isCorrectBirthday && isCorrectDateDeath && !author.getBirthday().isBefore(author.getDateOfDeath())){
+        //нужно проверить что дата смерти введена
+        if (isCorrectBirthday && isCorrectDateDeath && author.getDateOfDeath()!=null && !author.getBirthday().isBefore(author.getDateOfDeath())){
             isCorrectBirthday = false;
             isCorrectDateDeath = false;
         }

@@ -1,5 +1,5 @@
 <#macro bookForm path>
-    <form action="${path}" method="post">
+    <form action="${path}" method="post" enctype="multipart/form-data">
         <div class="form-group col-sm-4">
             <div class="form-group">
                 <label for="exampleFormControlInput1">Название</label>
@@ -31,6 +31,14 @@
                     <div class="invalid-feedback">${descriptionError}</div>
                 </#if>
             </div>
+            <div class="form-group">
+                <div class="custom-file">
+                    <input type="file" class="file-path"  id="customFileLangHTML" name="file" />
+                </div>
+                <#if fileError??>
+                    <div class="invalid-feedback">${fileError}</div>
+                </#if>
+            </div>
             <div class="form-group col-sm-3">
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
@@ -47,6 +55,9 @@
     <div class="card-columns">
         <#list books as bookItem>
             <div class="card my-3" style="width: 18rem;">
+                <#if bookItem.filename??>
+                    <img class="card-img-top" src="/img/book/${bookItem.filename}" alt=""/>
+                </#if>
                 <div class="card-body">
                     <h5 class="card-title">
                         <#if isManager>

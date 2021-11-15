@@ -85,7 +85,7 @@
         <#list commentsPage.getContent() as commentItem>
             <div class="card my-3" style="width: 18rem;" data-id="${commentItem.commentId}">
                 <#if commentItem.filename??>
-                    <img class="card-img-top" src="/img/${commentItem.filename}" />
+                    <img class="card-img-top" src="/img/comment/${commentItem.filename}" />
                 </#if>
                 <div class="card-body">
                     <h5 class="card-title">

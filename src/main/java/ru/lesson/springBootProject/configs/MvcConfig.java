@@ -12,8 +12,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 //в нашем случае выдаём страницу login.mustache стандартному контроллеру /login
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
-    @Value("${upload.path}")
+    @Value("${upload.comment.img.path}")
     private String uploadPath;
+    @Value("${upload.book.img.path}")
+    private String uploadBookImgPath;
 
     @Bean
     public RestTemplate getRestTemplate(){
@@ -28,7 +30,9 @@ public class MvcConfig implements WebMvcConfigurer {
     //настройка на раздачу статики. При обращении на /img/** Спринг ищет файлы в директории uploadPath и выдаёт по протоколу file
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/img/**")
+        registry.addResourceHandler("/img/book/**")
+                        .addResourceLocations("file://"+uploadBookImgPath+"/");
+        registry.addResourceHandler("/img/comment/**")
                 .addResourceLocations("file://"+uploadPath+"/");
         registry.addResourceHandler("/static/**")
                 .addResourceLocations("classpath:/static/");
