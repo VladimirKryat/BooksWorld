@@ -19,7 +19,6 @@ import ru.lesson.springBootProject.security.details.UserDetailsImpl;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Pattern;
 
 @Service
 public class UserServiceImpl implements UserService {

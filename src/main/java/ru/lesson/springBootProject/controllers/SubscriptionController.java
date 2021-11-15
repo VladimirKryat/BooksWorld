@@ -7,17 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ru.lesson.springBootProject.exceptions.UserServiceException;
 import ru.lesson.springBootProject.models.Author;
 import ru.lesson.springBootProject.models.User;
-import ru.lesson.springBootProject.repositories.UserRepository;
 import ru.lesson.springBootProject.security.details.UserDetailsImpl;
 import ru.lesson.springBootProject.services.UserService;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class SubscriptionController {

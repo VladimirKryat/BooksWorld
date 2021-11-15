@@ -1,17 +1,14 @@
 package ru.lesson.springBootProject.services;
 
-import org.hamcrest.core.StringContains;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.lesson.springBootProject.exceptions.ActivationServiceException;
@@ -22,10 +19,8 @@ import ru.lesson.springBootProject.models.State;
 import ru.lesson.springBootProject.models.User;
 import ru.lesson.springBootProject.repositories.UserRepository;
 
-import java.util.Locale;
 import java.util.Set;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
