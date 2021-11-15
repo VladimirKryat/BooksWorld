@@ -51,7 +51,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     public String userSave(
-            @RequestParam("userID") User user,
+            @RequestParam("userId") User user,
             //так как unchecked поля не отправляются, то запрос будет содержать разное количество полей
             //следовательно нужно получать Map
             @RequestParam Map<String,String> mapUser
@@ -66,6 +66,7 @@ public class UserController {
         if(mapUser.containsKey("email")&&!mapUser.get("email").strip().isEmpty()){
             user.setEmail(mapUser.get("email").strip());
         }
+
         //чтобы отобрать из полученных параметров роли, нужно получить список возможных значений Role в строковом представлении
         //иначе Role.valueOf будет выбрасывать исключения
         List<String> listRoles = Arrays.stream(Role.values()).map(Enum::name).collect(Collectors.toList());
@@ -150,7 +151,6 @@ public class UserController {
         }
 
         return new ModelAndView("redirect:/",model.asMap());
-
     }
 
 }

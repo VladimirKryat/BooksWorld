@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import ru.lesson.springBootProject.models.Comment;
-import ru.lesson.springBootProject.repositories.CommentRepository;
 import ru.lesson.springBootProject.security.details.UserDetailsImpl;
+import ru.lesson.springBootProject.services.CommentService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -33,7 +33,7 @@ public class CommentController {
     @Value("${upload.path}")
     private String uploadPath;
     @Autowired
-    private CommentRepository commentRepository;
+    private CommentService commentService;
 
     @GetMapping(value = {"/comment","/comment/{userId}","/comment/{userId}/{commentId}"})
     public String getListComment(
@@ -50,10 +50,10 @@ public class CommentController {
         }
         Page<Comment> page;
         if (userId!=null){
-            page = commentRepository.findAllByAuthor_UserId(userId,pageable);
+            page = commentService.findAllByAuthor(userId,pageable);
         }
         else {
-            page = commentRepository.findAll(pageable);
+            page = commentService.findAll(pageable);
         }
         mapModel.put("commentsPage",page);
         mapModel.put("url", request.getRequestURL());
@@ -66,7 +66,8 @@ public class CommentController {
             BindingResult bindingResult,
 //            bindingResult должен идти перед model, иначе ошибки будут проходить без обработки
             Model model,
-            @RequestParam("file") MultipartFile file
+            @RequestParam("file") MultipartFile file,
+            @PageableDefault(sort = {"commentId"}, direction = Sort.Direction.ASC, size = 6) Pageable pageable
     ){
         boolean isCorrect = true;
         if (bindingResult.hasErrors()){
@@ -91,13 +92,12 @@ public class CommentController {
             //проверяем, что файл сохранился без исключений
             if (isCorrect) {
                 comment.setAuthor(userDetails.getUser());
-                commentRepository.save(comment);
+                commentService.save(comment);
                 model.addAttribute("comment", null);
                 return "redirect:/comment";
             }
         }
-        Iterable<Comment> comments = commentRepository.findAll();
-        model.addAttribute("comments", comments);
+        model.addAttribute("comments", commentService.findAll(pageable));
         return "comment";
     }
 
@@ -110,6 +110,7 @@ public class CommentController {
             BindingResult bindingResult,
             @RequestParam("file") MultipartFile file,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PageableDefault(sort = {"commentId"}, direction = Sort.Direction.ASC, size = 6) Pageable pageable,
             Model model
     )
     {
@@ -144,10 +145,10 @@ public class CommentController {
             }
             model.addAttribute("comment", null);
             changeComment.setAuthor(userDetails.getUser());
-            commentRepository.save(changeComment);
+            commentService.save(changeComment);
         }
         model.addAttribute("model",null);
-        model.addAttribute("comments",commentRepository.findAllByAuthor_UserId(userDetails.getUser().getUserId()));
+        model.addAttribute("comments", commentService.findAllByAuthor(userDetails.getUser().getUserId(),pageable));
         return "comment";
     }
 

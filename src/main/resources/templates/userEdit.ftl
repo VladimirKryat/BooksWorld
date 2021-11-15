@@ -11,10 +11,6 @@
                     <input type="text" value="${user.username}" name="username" placeholder="Login:${user.username}">
                     <small class="form-text text-muted">Login must be unique</small>
                 </div>
-                <div class="form-group">
-                    <input type="text" value="${user.password}" name="password" placeholder="Password:${user.password}">
-                    <small class="form-text text-muted">Password must be 8-20 characters long</small>
-                </div>
             </div>
             <div class="form-group row my-1">
                 <input type="email" value="${(user.email)!'none'}" id="email" name="email" placeholder="Email:${(user.email)!'none'}">
@@ -40,7 +36,7 @@
             <div class="form-group row">
                 <button type="submit" class="btn btn-primary mt-2">Save</button>
             </div>
-                <input type="hidden" value="${user.userId}" name="userID">
+                <input type="hidden" value="${user.userId}" name="userId">
                 <input type="hidden" name="_csrf" value="${_csrf.token}"/>
             </div>
     </form>
