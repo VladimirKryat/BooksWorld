@@ -81,7 +81,7 @@ public class SignupController{
             model.addAttribute("message", "Email successfully activated");
         }
         else {
-            model.addAttribute("message", "Activation code is not found");
+            model.addAttribute("message", "Activation code is not found. Try against");
         }
         return "login";
     }

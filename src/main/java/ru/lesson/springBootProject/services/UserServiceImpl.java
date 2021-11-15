@@ -19,6 +19,7 @@ import ru.lesson.springBootProject.security.details.UserDetailsImpl;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -39,6 +40,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User addUser(User user) throws UserServiceException{
+        if (!UserServiceUtils.isValidUserdata(user)){
+            throw new UserServiceException(UserServiceUtils.messageForInvalidUserdata(user));
+        }
         if (existsByUsername(user.getUsername())){
            throw new UsernameNotUniqueException("Username exist");
         }
