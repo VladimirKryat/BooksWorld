@@ -2,6 +2,11 @@ package ru.lesson.springBootProject.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,11 +19,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
+import ru.lesson.springBootProject.dto.BookDto;
 import ru.lesson.springBootProject.models.Book;
 import ru.lesson.springBootProject.security.details.UserDetailsImpl;
 import ru.lesson.springBootProject.services.AuthorService;
 import ru.lesson.springBootProject.services.BookService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 
@@ -84,12 +91,21 @@ public class BookController {
     public String getBooks(
             Model model,
             @RequestParam(required = false) String message,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PageableDefault(size=3, sort ={"bookId"}, direction = Sort.Direction.ASC )Pageable pageable,
+            HttpServletRequest request
             ){
         if (message!=null){
             model.addAttribute("message",message);
         }
-        model.addAttribute("books",bookService.findAll(userDetails.getUser().getUserId()));
+        Page<BookDto> page = bookService.findAll(userDetails.getUser().getUserId(),pageable);
+        if (page.getTotalPages()-1<page.getNumber())
+        {
+            pageable= PageRequest.of(page.getTotalPages()-1,pageable.getPageSize(),pageable.getSort());
+            page = bookService.findAll(userDetails.getUser().getUserId(), pageable);
+        }
+        model.addAttribute("books",page);
+        model.addAttribute("url",request.getRequestURL());
         return "bookList";
     }
 }

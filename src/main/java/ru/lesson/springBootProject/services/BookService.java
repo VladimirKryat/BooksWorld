@@ -1,5 +1,7 @@
 package ru.lesson.springBootProject.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import ru.lesson.springBootProject.dto.BookDto;
 import ru.lesson.springBootProject.models.Book;
 
@@ -10,5 +12,5 @@ public interface BookService {
 
     List<Book> findAll();
 
-    List<BookDto> findAll(Long userId);
+    Page<BookDto> findAll(Long userId, Pageable pageable);
 }

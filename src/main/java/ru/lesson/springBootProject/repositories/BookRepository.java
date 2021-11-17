@@ -1,5 +1,7 @@
 package ru.lesson.springBootProject.repositories;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,5 +13,5 @@ import java.util.List;
 public interface BookRepository extends JpaRepository<Book,Long> {
     @Query("select new ru.lesson.springBootProject.dto.BookDto (b, count(lk), sum(case when :userId = lk.userId then 1 else 0 end)>0) " +
             "from Book b left join b.likes lk group by b")
-    List<BookDto> findAll(@Param("userId") Long userId);
+    Page<BookDto> findAll(@Param("userId") Long userId, Pageable pageable);
 }

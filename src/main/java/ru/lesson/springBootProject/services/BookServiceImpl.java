@@ -1,6 +1,8 @@
 package ru.lesson.springBootProject.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.lesson.springBootProject.dto.BookDto;
 import ru.lesson.springBootProject.models.Book;
@@ -25,7 +27,7 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public List<BookDto> findAll(Long userId){
-        return bookRepository.findAll(userId);
+    public Page<BookDto> findAll(Long userId, Pageable pageable){
+        return bookRepository.findAll(userId,pageable);
     }
 }

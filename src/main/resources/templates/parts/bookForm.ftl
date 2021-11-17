@@ -52,9 +52,10 @@
 
 <#macro listBookCard>
     <#include "security.ftl">
+    <#import "pager.ftl" as pager>
     <div class="card-columns">
 
-        <#list books as bookItem>
+        <#list books.getContent() as bookItem>
             <div class="card my-3" style="width: 18rem;">
                 <#if bookItem.filename??>
                     <img class="card-img-top" src="/img/book/${bookItem.filename}" alt=""/>
@@ -98,6 +99,7 @@
             </div>
         </#list>
     </div>
+    <@pager.pager url books/>
 </#macro>
 
 <#macro oldTableOfBook>
