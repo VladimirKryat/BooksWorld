@@ -10,6 +10,7 @@ public class CaptchaResponseDto {
     private boolean success;
 //    @JsonAlias("challenge_ts")
 //    private LocalDateTime challengeTs;
+    //привязываем следующее поле к ключам Json, определённым в CaptchaRest
     @JsonAlias("error-codes")
     private Set<String> errorCodes;
 

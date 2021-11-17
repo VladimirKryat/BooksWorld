@@ -56,7 +56,7 @@ public class User implements Serializable {
     @Enumerated(value = EnumType.STRING)
     private Set<Role> roles;
 
-    @ManyToMany(targetEntity = Author.class, cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+    @ManyToMany(targetEntity = Author.class, fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.PERSIST})
     @JoinTable(
             name = "user_subscription_author",
             joinColumns = {@JoinColumn(name="user_id")},

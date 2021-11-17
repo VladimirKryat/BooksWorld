@@ -9,7 +9,7 @@ import ru.lesson.springBootProject.models.Comment;
 import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-@Query(nativeQuery = true, value = "SELECT * FROM comment c LEFT JOIN userdata u on c.user_id = u.user_id")
+@Query(value = "FROM Comment c LEFT JOIN c.author")
     List<Comment> findAll();
     List<Comment> findAllByAuthor_UserId(Long userId);
 
