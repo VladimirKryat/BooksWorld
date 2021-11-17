@@ -11,10 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponents;
@@ -59,8 +56,6 @@ public class BookController {
             BindingResult bindingResult,
             Model model,
             @RequestParam("file") MultipartFile file,
-//            @RequestHeader(required = false, defaultValue = "/") String referer
-
             RedirectAttributes redirectAttributes
     ){
         if (bindingResult.hasErrors()){
@@ -107,5 +102,17 @@ public class BookController {
         model.addAttribute("books",page);
         model.addAttribute("url",request.getRequestURL());
         return "bookList";
+    }
+
+    @GetMapping("/book/{bookId}/like")
+    public String like(
+            @PathVariable(name = "bookId") Book book,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            RedirectAttributes redirectAttributes,
+            @RequestHeader(required = false) String referer,
+            HttpServletRequest request
+    ){
+        book = bookService.like(book,userDetails.getUser());
+        return "redirect:"+referer;
     }
 }

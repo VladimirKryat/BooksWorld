@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.lesson.springBootProject.dto.BookDto;
 import ru.lesson.springBootProject.models.Book;
+import ru.lesson.springBootProject.models.User;
 import ru.lesson.springBootProject.repositories.BookRepository;
 
 import javax.persistence.EntityManager;
@@ -29,5 +30,15 @@ public class BookServiceImpl implements BookService{
     @Override
     public Page<BookDto> findAll(Long userId, Pageable pageable){
         return bookRepository.findAll(userId,pageable);
+    }
+
+    @Override
+    public Book like(Book book, User user){
+        if (book.getLikes().contains(user)){
+            book.getLikes().remove(user);
+        }else{
+            book.getLikes().add(user);
+        }
+        return bookRepository.save(book);
     }
 }

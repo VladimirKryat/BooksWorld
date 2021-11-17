@@ -38,7 +38,6 @@ public class SubscriptionController {
         return "userSubscriptionsList";
     }
 
-    @Transactional
     @GetMapping("/unsubscribe")
     public ModelAndView unsubscribe(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -65,13 +64,13 @@ public class SubscriptionController {
     ){
         try {
             User user = userService.addSubscriptions(userDetails.getUser(),author);
-            model.addAttribute("message", "Add subscription on "+author.getName());
+            model.addAttribute("message", "Successful subscription on "+author.getName());
 
         }catch (UserServiceException ex){
             System.out.println(ex.getMessage());
-            model.addAttribute("message", "Add subscription on "+author.getName()+" failed");
+            model.addAttribute("message", "Failure subscription on "+author.getName()+" failed");
         }
-        return new ModelAndView("redirect:/",model.asMap());
+        return new ModelAndView("redirect:/mySubscriptions",model.asMap());
     }
 
 }

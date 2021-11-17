@@ -75,7 +75,7 @@
                                 <a class="btn btn-info" href="/manager/authorEditor?author=${author.authorId}">${author.name}</a><#sep>, </#list>
                         <#else >
                             <#list bookItem.authors as author>
-                            <a class="btn btn-info" href="/authorInfo?author=${author.authorId}">${author.name}</a><#sep>, </#list>
+                                <a class="btn btn-info" href="/authorInfo?author=${author.authorId}">${author.name}</a><#sep>, </#list>
                         </#if>
                     </h6>
                     <p class="card-text">
@@ -88,12 +88,14 @@
                         </#if>
                     </p>
                     <div class="card-footer text-center">
-                        <#if bookItem.meIsLiked>
-                            <i class="fas fa-heart"></i>
-                        <#else>
-                            <i class="far fa-heart"></i>
-                        </#if>
-                        ${bookItem.likes}
+                        <a href="book/${bookItem.bookId}/like">
+                            <#if bookItem.meIsLiked>
+                                <i class="fas fa-heart"></i>
+                            <#else>
+                                <i class="far fa-heart"></i>
+                            </#if>
+                            ${bookItem.likes}
+                        </a>
                     </div>
                 </div>
             </div>
