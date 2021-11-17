@@ -53,6 +53,7 @@
 <#macro listBookCard>
     <#include "security.ftl">
     <div class="card-columns">
+
         <#list books as bookItem>
             <div class="card my-3" style="width: 18rem;">
                 <#if bookItem.filename??>
@@ -77,8 +78,22 @@
                         </#if>
                     </h6>
                     <p class="card-text">
-                        ${bookItem.description!""}
+                        <#if bookItem.description??>
+                            <#if bookItem.description?length gte 255>
+                                ${bookItem.description?substring(1,252)}...
+                            <#else >
+                                ${bookItem.description}
+                            </#if>
+                        </#if>
                     </p>
+                    <div class="card-footer text-center">
+                        <#if bookItem.meIsLiked>
+                            <i class="fas fa-heart"></i>
+                        <#else>
+                            <i class="far fa-heart"></i>
+                        </#if>
+                        ${bookItem.likes}
+                    </div>
                 </div>
             </div>
         </#list>

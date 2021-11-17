@@ -2,6 +2,7 @@ package ru.lesson.springBootProject.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.lesson.springBootProject.models.Book;
+import ru.lesson.springBootProject.security.details.UserDetailsImpl;
 import ru.lesson.springBootProject.services.AuthorService;
 import ru.lesson.springBootProject.services.BookService;
 
@@ -81,12 +83,13 @@ public class BookController {
     @GetMapping("/bookList")
     public String getBooks(
             Model model,
-            @RequestParam(required = false) String message
-    ){
+            @RequestParam(required = false) String message,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+            ){
         if (message!=null){
             model.addAttribute("message",message);
         }
-        model.addAttribute("books",bookService.findAll());
+        model.addAttribute("books",bookService.findAll(userDetails.getUser().getUserId()));
         return "bookList";
     }
 }

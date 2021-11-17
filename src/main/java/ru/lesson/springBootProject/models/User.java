@@ -43,6 +43,14 @@ public class User implements Serializable {
     @Column (name="email")
     private String email;
 
+    @ManyToMany (fetch = FetchType.LAZY, targetEntity = Book.class, mappedBy = "likes")
+    /*@JoinTable(name = "user_like_book",
+            joinColumns = @JoinColumn(name="user_id"),
+            inverseJoinColumns = @JoinColumn(name="book_id"))*/
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<Book> likes = new HashSet<>();
+
 
     //подобно OneToMany  за тем исключением, что нам не нужно описывает Role как Entity/Embeddable
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)

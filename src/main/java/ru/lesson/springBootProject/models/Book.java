@@ -41,6 +41,14 @@ public class Book implements Serializable {
 
     private String filename;
 
+    @ManyToMany (fetch = FetchType.LAZY, targetEntity = User.class)
+    @JoinTable(name = "user_like_book",
+            joinColumns = @JoinColumn(name="book_id"),
+            inverseJoinColumns = @JoinColumn(name="user_id"))
+    private Set<User> likes = new HashSet<>();
+
+    @JoinTable
+
     @Override
     public String toString() {
         return "Book{" +
