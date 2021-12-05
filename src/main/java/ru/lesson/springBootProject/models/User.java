@@ -44,9 +44,6 @@ public class User implements Serializable {
     private String email;
 
     @ManyToMany (fetch = FetchType.LAZY, targetEntity = Book.class, mappedBy = "likes")
-    /*@JoinTable(name = "user_like_book",
-            joinColumns = @JoinColumn(name="user_id"),
-            inverseJoinColumns = @JoinColumn(name="book_id"))*/
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<Book> likes = new HashSet<>();

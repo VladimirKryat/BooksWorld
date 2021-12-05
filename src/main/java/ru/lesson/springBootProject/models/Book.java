@@ -1,11 +1,12 @@
 package ru.lesson.springBootProject.models;
 
 import lombok.*;
+import org.hibernate.annotations.CollectionId;
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
@@ -47,7 +48,11 @@ public class Book implements Serializable {
             inverseJoinColumns = @JoinColumn(name="user_id"))
     private Set<User> likes = new HashSet<>();
 
-    @JoinTable
+    @ElementCollection(targetClass = Genre.class)
+    @CollectionTable(name = "genre_book", joinColumns = @JoinColumn(name = "book_id", nullable = false))
+    @Enumerated(EnumType.STRING)
+    @Column(name="genre")
+    private Set<Genre> genres;
 
     @Override
     public String toString() {

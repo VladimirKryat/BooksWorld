@@ -87,6 +87,13 @@
                             </#if>
                         </#if>
                     </p>
+                    <div class="card-footer">
+                        <#if bookItem.genres??>
+                            <#list bookItem.genres as genreBook>
+                                <div>${genreBook}</div>
+                            </#list>
+                        </#if>
+                    </div>
                     <div class="card-footer text-center">
                         <a href="book/${bookItem.bookId}/like">
                             <#if bookItem.meIsLiked>

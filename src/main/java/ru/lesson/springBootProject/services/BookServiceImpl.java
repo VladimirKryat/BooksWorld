@@ -16,8 +16,6 @@ import java.util.List;
 public class BookServiceImpl implements BookService{
     @Autowired
     private BookRepository bookRepository;
-    @Autowired
-    private EntityManager em;
     @Override
     public Book save(Book book){
         return bookRepository.save(book);
