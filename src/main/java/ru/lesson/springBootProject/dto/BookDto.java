@@ -5,6 +5,7 @@ import lombok.Getter;
 import ru.lesson.springBootProject.models.Author;
 import ru.lesson.springBootProject.models.Book;
 import ru.lesson.springBootProject.models.Genre;
+import ru.lesson.springBootProject.models.GenreName;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -20,7 +21,7 @@ public class BookDto{
     private String filename;
     private Long likes;
     private Boolean meIsLiked;
-    private Set<Genre> genres=new HashSet<>();
+    private Set<GenreName> genres =new HashSet<>();
 
     public BookDto(){}
     public BookDto(Book book, Long likes, Boolean meIsLiked){
@@ -31,7 +32,7 @@ public class BookDto{
         this.title=book.getTitle();
         this.likes=likes;
         this.meIsLiked=meIsLiked;
-        this.genres=book.getGenres();
+        this.genres =book.getGenres().stream().map(Genre::getGenre).collect(Collectors.toSet());
     }
 
     @Override

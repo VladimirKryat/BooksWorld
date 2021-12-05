@@ -1,8 +1,6 @@
 package ru.lesson.springBootProject.models;
 
 import lombok.*;
-import org.hibernate.annotations.CollectionId;
-import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -48,10 +46,9 @@ public class Book implements Serializable {
             inverseJoinColumns = @JoinColumn(name="user_id"))
     private Set<User> likes = new HashSet<>();
 
-    @ElementCollection(targetClass = Genre.class)
-    @CollectionTable(name = "genre_book", joinColumns = @JoinColumn(name = "book_id", nullable = false))
-    @Enumerated(EnumType.STRING)
-    @Column(name="genre")
+
+    @OneToMany(fetch = FetchType.EAGER,targetEntity = Genre.class, mappedBy = "book", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
+//    @JoinColumn(name = "genre_book_id")
     private Set<Genre> genres;
 
     @Override

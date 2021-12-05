@@ -22,6 +22,7 @@ import ru.lesson.springBootProject.security.details.UserDetailsImpl;
 import ru.lesson.springBootProject.services.AuthorService;
 import ru.lesson.springBootProject.services.BookService;
 
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -34,6 +35,8 @@ public class BookController {
     private BookService bookService;
     @Autowired
     private AuthorService authorService;
+    @Autowired
+    private EntityManager em;
     @Value("${default.book}")
     private String defaultBook;
     @Value("${upload.book.img.path}")
