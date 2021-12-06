@@ -100,7 +100,10 @@ public class UserServiceImpl implements UserService {
             isEmailChanged=true;
         }
         User result = userRepository.save(oldUser);
-        if (isEmailChanged) activationService.newActivation(result);
+        if (isEmailChanged) {
+            new Thread(() -> activationService.newActivation(result)).run();
+        }
+
         return result;
     }
 
