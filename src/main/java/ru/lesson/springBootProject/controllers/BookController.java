@@ -141,4 +141,12 @@ public class BookController {
         book = bookService.like(book,userDetails.getUser());
         return "redirect:"+referer;
     }
+
+    @GetMapping("/manager/bookDelete")
+    public String bookDelete(
+            @RequestParam(name="book") Long bookId
+    ){
+        bookService.delete(bookId);
+        return "redirect:/bookList";
+    }
 }

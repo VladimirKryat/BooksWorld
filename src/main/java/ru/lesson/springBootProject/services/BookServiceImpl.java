@@ -69,4 +69,11 @@ public class BookServiceImpl implements BookService{
         }
 
     }
+
+    @Override
+    public void delete(Long bookId) {
+        Optional<Book> candidateBook = bookRepository.findById(bookId);
+        if (candidateBook.isEmpty()) return;
+        bookRepository.delete(candidateBook.get());
+    }
 }

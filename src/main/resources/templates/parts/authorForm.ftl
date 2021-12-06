@@ -85,5 +85,11 @@
         <#else >
             <a href="/unsubscribe?author=${author.authorId}" class="btn btn-outline-danger">Unsubscribe</a>
         </#if>
+        <#include "security.ftl">
+        <#if isManager>
+            <div class="card-footer text-center mt-2">
+                <a class="btn btn-info" href="/manager/authorEditor?author=${author.authorId}">Edit ${author.name}</a>
+            </div>
+        </#if>
     </div>
 </#macro>

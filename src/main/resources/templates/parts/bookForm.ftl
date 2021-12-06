@@ -16,10 +16,10 @@
                         name="genresName" multiple>
                     <#list allGenres as genre>
                         <option value=${genre}
-<#--                                >-->
-<#--                            ${genre}-->
-                            <#if book??&&book.genres??>${book.genres?seq_contains(genre)?string("selected","")}
-                            </#if>>${genre}
+                                <#--                                >-->
+                                <#--                            ${genre}-->
+                                <#if book??&&book.genres??>${book.genres?seq_contains(genre)?string("selected","")}
+                                </#if>>${genre}
                         </option>
                     </#list>
                 </select>
@@ -79,21 +79,14 @@
                 </#if>
                 <div class="card-body">
                     <h5 class="card-title">
-                        <#if isManager>
-                            <a href="/manager/bookEditor?book=${bookItem.bookId}">${bookItem.title}</a>
-                        <#else >
+
                             ${bookItem.title}
-                        </#if>
 
                     </h5>
                     <h6 class="card-subtitle mb-2 text-muted">
-                        <#if isManager>
-                            <#list bookItem.authors as author>
-                                <a class="btn btn-info" href="/manager/authorEditor?author=${author.authorId}">${author.name}</a><#sep>, </#list>
-                        <#else >
-                            <#list bookItem.authors as author>
-                                <a class="btn btn-info" href="/authorInfo?author=${author.authorId}">${author.name}</a><#sep>, </#list>
-                        </#if>
+
+                        <#list bookItem.authors as author>
+                            <a class="btn btn-info" href="/authorInfo?author=${author.authorId}">${author.name}</a><#sep>, </#list>
                     </h6>
                     <p class="card-text">
                         <#if bookItem.description??>
@@ -112,6 +105,7 @@
                         </#if>
                     </div>
                     <div class="card-footer text-center">
+
                         <a href="book/${bookItem.bookId}/like">
                             <#if bookItem.meIsLiked>
                                 <i class="fas fa-heart"></i>
@@ -121,32 +115,15 @@
                             ${bookItem.likes}
                         </a>
                     </div>
+                    <div class="card-footer text-center">
+                        <#if isManager>
+                                <a href="/manager/bookEditor?book=${bookItem.bookId}">Change book</a>
+                                <a class="btn btn-outline-danger" href="/manager/bookDelete?book=${bookItem.bookId}">Delete book</a>
+                        </#if>
+                    </div>
                 </div>
             </div>
         </#list>
     </div>
     <@pager.pager url books/>
-</#macro>
-
-<#macro oldTableOfBook>
-    <h3>List of books</h3>
-    <table class="table table-bordered">
-        <thead class="thead-dark">
-        <tr>
-            <th>bookID</th>
-            <th>&nbsp Title</th>
-            <th>&nbsp Authors</th>
-            <th>&nbsp Description</th>
-        </tr>
-        </thead>
-
-        <#list books as book>
-            <tr>
-                <td>&nbsp${book.bookId}&nbsp</td>
-                <td>&nbsp<a href="/manager/bookEditor?book=${book.bookId}">${book.title}</a>&nbsp</td>
-                <td>&nbsp<#list book.authors as author><a href="/manager/authorEditor?author=${author.authorId}">${author.name} </a><#sep>,</#list>&nbsp</td>
-                <td>&nbsp${book.description}&nbsp</td>
-            </tr>
-        </#list>
-    </table>
 </#macro>

@@ -18,4 +18,6 @@ public interface BookService {
     Book like(Book book, User user);
 
     void changeGenre(Book book, String[] genresName);
+
+    void delete(Long bookId);
 }
