@@ -11,6 +11,23 @@
                 </#if>
             </div>
             <div class="form-group">
+                <label for="genres"> Выберите жанр</label>
+                <select class="custom-select  ${(genresNameError??)?string('is-invalid','')}"
+                        name="genresName" multiple>
+                    <#list allGenres as genre>
+                        <option value=${genre}
+<#--                                >-->
+<#--                            ${genre}-->
+                            <#if book??&&book.genres??>${book.genres?seq_contains(genre)?string("selected","")}
+                            </#if>>${genre}
+                        </option>
+                    </#list>
+                </select>
+                <#if genresNameError??>
+                    <div class="invalid-feedback">${genresNameError}</div>
+                </#if>
+            </div>
+            <div class="form-group">
                 <label for="authors"> Выберите автора</label>
                 <select class="custom-select  ${(authorsError??)?string('is-invalid','')}"
                         name="authors" multiple>
@@ -81,7 +98,7 @@
                     <p class="card-text">
                         <#if bookItem.description??>
                             <#if bookItem.description?length gte 255>
-                                ${bookItem.description?substring(1,252)}...
+                                ${bookItem.description?substring(0,252)}...
                             <#else >
                                 ${bookItem.description}
                             </#if>

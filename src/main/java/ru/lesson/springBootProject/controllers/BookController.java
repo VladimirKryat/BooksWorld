@@ -11,6 +11,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -18,6 +20,8 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.lesson.springBootProject.dto.BookDto;
 import ru.lesson.springBootProject.models.Book;
+import ru.lesson.springBootProject.models.Genre;
+import ru.lesson.springBootProject.models.GenreName;
 import ru.lesson.springBootProject.security.details.UserDetailsImpl;
 import ru.lesson.springBootProject.services.AuthorService;
 import ru.lesson.springBootProject.services.BookService;
@@ -26,6 +30,9 @@ import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 
@@ -47,24 +54,32 @@ public class BookController {
             Model model
     ){
         if (book!=null) {
-            model.addAttribute("book", book);
+            model.addAttribute("book", new BookDto(book,0L,false));
         }
 
         model.addAttribute("allAuthors",authorService.findAll());
+        model.addAttribute("allGenres", GenreName.values());
         return "bookEditor";
     }
     @PostMapping("/manager/bookEditor")
     public String saveBookEditor(
+            @RequestParam(name = "bookId", required = false) Book oldBook,
+            @RequestParam(required = false, name = "genresName") String[] genresName,
             @Valid Book book,
             BindingResult bindingResult,
             Model model,
             @RequestParam("file") MultipartFile file,
             RedirectAttributes redirectAttributes
     ){
+        //если жанр не выбран, то создаём ошибку поля
+        if (genresName==null||genresName.length==0){
+            bindingResult.addError(new FieldError("book","genresName","Genre can't be empty"));
+        }
         if (bindingResult.hasErrors()){
             model.mergeAttributes(ControllerUtils.getErrorMap(bindingResult));
-            model.addAttribute("book",book);
+            model.addAttribute("book",new BookDto(book,0L,false));
             model.addAttribute("allAuthors",authorService.findAll());
+            model.addAttribute("allGenres", GenreName.values());
             return "bookEditor";
         }
         if (!ControllerUtils.checkFilename(file)){
@@ -75,11 +90,19 @@ public class BookController {
             } catch (IOException e) {
                 e.printStackTrace();
                 model.addAttribute("fileError",e.getMessage());
-                model.addAttribute("book",book);
+                model.addAttribute("book",new BookDto(book,0L,false));
                 model.addAttribute("allAuthors",authorService.findAll());
+                model.addAttribute("allGenres", GenreName.values());
                 return "bookEditor";
             }
         }
+        //если книга уже есть восстанавливаем лайки и старый список жанров
+        if (book.getBookId()!=null){
+            book.setLikes(oldBook.getLikes());
+            book.setGenres(oldBook.getGenres());
+        }
+        bookService.changeGenre(book,genresName);
+
         bookService.save(book);
         redirectAttributes.addAttribute("message","Book save success");
         return "redirect:/bookList";

@@ -47,9 +47,8 @@ public class Book implements Serializable {
     private Set<User> likes = new HashSet<>();
 
 
-    @OneToMany(fetch = FetchType.EAGER,targetEntity = Genre.class, mappedBy = "book", cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
-//    @JoinColumn(name = "genre_book_id")
-    private Set<Genre> genres;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Genre> genres = new HashSet<>();
 
     @Override
     public String toString() {

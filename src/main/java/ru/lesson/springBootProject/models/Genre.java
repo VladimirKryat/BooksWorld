@@ -1,9 +1,6 @@
 package ru.lesson.springBootProject.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -14,6 +11,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Table(name = "genre_book")
+@Builder
 public class Genre {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +19,7 @@ public class Genre {
     private Long genreBookId;
     @Enumerated(EnumType.STRING)
     private GenreName genre;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "book_id")
     private Book book;
 
@@ -36,5 +34,10 @@ public class Genre {
     @Override
     public int hashCode() {
         return Objects.hash(genre, book);
+    }
+
+    @Override
+    public String toString() {
+        return book.getTitle()+" "+genre.toString();
     }
 }

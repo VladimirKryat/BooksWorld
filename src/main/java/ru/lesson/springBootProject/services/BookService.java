@@ -16,4 +16,6 @@ public interface BookService {
     Page<BookDto> findAll(Long userId, Pageable pageable);
 
     Book like(Book book, User user);
+
+    void changeGenre(Book book, String[] genresName);
 }
