@@ -1,6 +1,8 @@
 package ru.lesson.springBootProject.models;
 
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -44,6 +46,7 @@ public class User implements Serializable {
     private String email;
 
     @ManyToMany (fetch = FetchType.LAZY, targetEntity = Book.class, mappedBy = "likes")
+    @Fetch(FetchMode.SUBSELECT)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<Book> likes = new HashSet<>();
@@ -69,6 +72,7 @@ public class User implements Serializable {
     )
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @Fetch(FetchMode.SUBSELECT)
     private Set<Author> subscriptions = new HashSet<>();
 
 

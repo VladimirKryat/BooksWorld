@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.lesson.springBootProject.exceptions.AuthorServiceException;
 import ru.lesson.springBootProject.models.Author;
+import ru.lesson.springBootProject.models.User;
 import ru.lesson.springBootProject.repositories.AuthorRepository;
 import ru.lesson.springBootProject.repositories.BookRepository;
 
@@ -38,8 +39,8 @@ public class AuthorServiceImpl implements AuthorService{
 
     @Transactional
     @Override
-    public Author findByIdWithBooks(Author author) throws AuthorServiceException {
-        Author result = authorRepository.findById(author.getAuthorId()).orElseThrow(()->new AuthorServiceException("Author not found by id"));
+    public Author findByIdWithBooks(Long authorId) throws AuthorServiceException {
+        Author result = authorRepository.findById(authorId).orElseThrow(()->new AuthorServiceException("Author not found by id"));
         result.getBooks().isEmpty();
         return result;
     }
@@ -77,5 +78,14 @@ public class AuthorServiceImpl implements AuthorService{
         return authorRepository.countBook(authorId);
     }
 
+    @Override
+    public Author findById(Long authorId) throws AuthorServiceException{
+        return authorRepository.findById(authorId).orElseThrow(()-> new AuthorServiceException("Author not found by Id"));
+    }
+
+    @Override
+    public boolean existAuthorWithSubscribers(Long authorId, Iterable<User> users){
+        return authorRepository.existsAuthorByAuthorIdAndSubscriptionsIn(authorId,users);
+    }
 
 }

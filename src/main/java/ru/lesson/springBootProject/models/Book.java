@@ -1,6 +1,8 @@
 package ru.lesson.springBootProject.models;
 
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -31,8 +33,7 @@ public class Book implements Serializable {
     @Column(length = 2048)
     private String description;
     @NotEmpty(message = "Author can't be empty")
-    @ManyToMany(fetch = FetchType.EAGER,
-            targetEntity = Author.class)
+    @ManyToMany(fetch = FetchType.EAGER, targetEntity = Author.class)
     @JoinTable(name="author_book",
             joinColumns = @JoinColumn(name = "book_id", nullable = false),
             inverseJoinColumns = @JoinColumn(name="author_id", nullable = false))
@@ -44,6 +45,7 @@ public class Book implements Serializable {
     @JoinTable(name = "user_like_book",
             joinColumns = @JoinColumn(name="book_id"),
             inverseJoinColumns = @JoinColumn(name="user_id"))
+    @Fetch(FetchMode.SUBSELECT)
     private Set<User> likes = new HashSet<>();
 
 

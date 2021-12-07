@@ -67,10 +67,12 @@
     </form>
 </#macro>
 
-<#macro listBookCard>
+<#macro listBookCard withFilter>
     <#include "security.ftl">
     <#import "pager.ftl" as pager>
-    <@filterNavBar/>
+    <#if withFilter>
+        <@filterNavBar/>
+    </#if>
     <div class="card-columns">
 
         <#list books.getContent() as bookItem>

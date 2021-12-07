@@ -6,10 +6,7 @@ import ru.lesson.springBootProject.models.User;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User,Long> {
-//    @Query(nativeQuery = true, value = "SELECT * FROM userdata LEFT JOIN user_role USING(user_id) where username=?")
     Optional<User> findByUsername(String username);
-//    @Query(nativeQuery = true, value = "SELECT * FROM userdata LEFT JOIN user_role USING(user_id)")
-//    List<User> findAllWithRoles();
     boolean existsByUsername(String username);
 
 }

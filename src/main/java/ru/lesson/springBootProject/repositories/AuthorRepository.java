@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.lesson.springBootProject.models.Author;
+import ru.lesson.springBootProject.models.User;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -16,4 +17,6 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
     Long countSubscribers(@Param("authorId") Long authorId);
     @Query("SELECT a.books.size FROM Author a WHERE a.authorId=:authorId")
     Long countBook(@Param("authorId") Long authorId);
+
+    boolean existsAuthorByAuthorIdAndSubscriptionsIn(Long authorId, Iterable<User> users);
 }

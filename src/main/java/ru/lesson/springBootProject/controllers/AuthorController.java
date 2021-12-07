@@ -1,6 +1,9 @@
 package ru.lesson.springBootProject.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,10 +16,13 @@ import ru.lesson.springBootProject.models.Author;
 import ru.lesson.springBootProject.models.User;
 import ru.lesson.springBootProject.security.details.UserDetailsImpl;
 import ru.lesson.springBootProject.services.AuthorService;
+import ru.lesson.springBootProject.services.BookService;
 import ru.lesson.springBootProject.services.UserService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.util.Collections;
 
 @Controller
 @RequestMapping
@@ -25,6 +31,8 @@ public class AuthorController {
     private AuthorService authorService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private BookService bookService;
     @GetMapping("/manager/authorEditor")
     public String getAuthorEditor(
             @RequestParam(name="author", required = false) Author author,
@@ -79,15 +87,19 @@ public class AuthorController {
 
     @GetMapping("/authorInfo")
     public String getAuthorInfo(
-            @RequestParam Author author,
+            @RequestParam(name = "author") Long authorId,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PageableDefault(size=6, sort ={"bookId"}, direction = Sort.Direction.DESC ) Pageable pageable,
+            HttpServletRequest request,
             Model model
     ){
-        User user = userService.getSubscriptions(userDetails.getUser());
+        Author author = authorService.findById(authorId);
         model.addAttribute("author",author);
-        model.addAttribute("isSubscription", user.getSubscriptions().contains(author));
+        model.addAttribute("isSubscription", authorService.existAuthorWithSubscribers(authorId, Collections.singleton(userDetails.getUser())));
         model.addAttribute("countSubscribers",authorService.countSubscribers(author.getAuthorId()));
+        model.addAttribute("books",bookService.findAllByAuthors(userDetails.getUser().getUserId(), pageable,author));
         model.addAttribute("countBooksInShop",authorService.countBook(author.getAuthorId()));
+        model.addAttribute("url",request.getRequestURL()+"?author="+authorId+"&amp;");
         return "authorInfo";
     }
 }

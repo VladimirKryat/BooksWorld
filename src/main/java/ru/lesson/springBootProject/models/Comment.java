@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -33,7 +36,9 @@ public class Comment {
     @NotNull(message = "Stars cannot be null")
     @Column(name="stars", nullable = false)
     private Byte stars;
-    @ManyToOne(fetch = FetchType.EAGER, targetEntity = User.class)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = User.class)
+    @Fetch(FetchMode.SELECT)
+    @BatchSize(size = 10)
     @JoinColumn(name = "user_id")
     private User author;
 

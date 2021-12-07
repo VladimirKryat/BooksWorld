@@ -4,5 +4,5 @@
     <#if message??>
         <h3>${message}</h3>
     </#if>
-    <@b.listBookCard/>
+    <@b.listBookCard true/>
 </@p.page>

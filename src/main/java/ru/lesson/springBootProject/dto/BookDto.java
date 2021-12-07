@@ -35,6 +35,17 @@ public class BookDto{
         this.genres =book.getGenres().stream().map(GenreBook::getGenre).collect(Collectors.toSet());
     }
 
+    public BookDto(Long bookId, String title, String description, Set<Author> authors, String filename, Long likes, Boolean meIsLiked, Set<GenreName> genres) {
+        this.bookId = bookId;
+        this.title = title;
+        this.description = description;
+        this.authors = authors;
+        this.filename = filename;
+        this.likes = likes;
+        this.meIsLiked = meIsLiked;
+        this.genres = genres;
+    }
+
     @Override
     public String toString() {
         return "BookDto{" +

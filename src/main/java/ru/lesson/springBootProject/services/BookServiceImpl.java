@@ -8,10 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 import ru.lesson.springBootProject.dto.BookDto;
-import ru.lesson.springBootProject.models.Book;
-import ru.lesson.springBootProject.models.GenreBook;
-import ru.lesson.springBootProject.models.GenreName;
-import ru.lesson.springBootProject.models.User;
+import ru.lesson.springBootProject.models.*;
 import ru.lesson.springBootProject.repositories.BookRepository;
 import ru.lesson.springBootProject.repositories.GenreRepository;
 import ru.lesson.springBootProject.services.filters.FilterBook;
@@ -24,10 +21,6 @@ import java.util.stream.Collectors;
 public class BookServiceImpl implements BookService{
     @Autowired
     private BookRepository bookRepository;
-    @Autowired
-    private GenreRepository genreRepository;
-    @Autowired
-    EntityManager entityManager;
     @Override
     public Book save(Book book){
         return bookRepository.save(book);
@@ -109,5 +102,10 @@ public class BookServiceImpl implements BookService{
             page = findAllWithFilter(userId,pageable, filterBook);
         }
         return page;
+    }
+
+    @Override
+    public Page<BookDto> findAllByAuthors(Long userId, Pageable pageable, Author author) {
+        return bookRepository.findAllByAuthors(userId, pageable, author);
     }
 }

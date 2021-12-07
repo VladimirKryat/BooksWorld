@@ -1,6 +1,8 @@
 package ru.lesson.springBootProject.models;
 
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -46,10 +48,12 @@ public class Author implements Serializable {
     @ManyToMany(mappedBy = "authors",
             fetch = FetchType.LAZY,targetEntity = Book.class,
             cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+    @Fetch(FetchMode.SUBSELECT)
     private Set<Book> books=new HashSet<>();
 
     @ManyToMany(mappedBy = "subscriptions",targetEntity = User.class, fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @Fetch(FetchMode.SUBSELECT)
     private Set<User> subscriptions=new HashSet<>();
 }

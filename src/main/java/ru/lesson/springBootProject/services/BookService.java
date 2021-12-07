@@ -3,6 +3,7 @@ package ru.lesson.springBootProject.services;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.lesson.springBootProject.dto.BookDto;
+import ru.lesson.springBootProject.models.Author;
 import ru.lesson.springBootProject.models.Book;
 import ru.lesson.springBootProject.models.User;
 import ru.lesson.springBootProject.services.filters.FilterBook;
@@ -23,4 +24,6 @@ public interface BookService {
     void delete(Long bookId);
 
     Page<BookDto> findAllWithFilter(Long userId, Pageable pageable, FilterBook filterBook);
+
+    Page<BookDto> findAllByAuthors(Long userId, Pageable pageable, Author author);
 }
