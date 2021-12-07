@@ -48,7 +48,7 @@ public class Book implements Serializable {
 
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Genre> genres = new HashSet<>();
+    private Set<GenreBook> genres = new HashSet<>();
 
     @Override
     public String toString() {

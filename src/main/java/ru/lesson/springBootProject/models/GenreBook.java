@@ -12,7 +12,7 @@ import java.util.Objects;
 @Setter
 @Table(name = "genre_book")
 @Builder
-public class Genre {
+public class GenreBook {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "genre_book_id")
@@ -27,8 +27,8 @@ public class Genre {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Genre genre1 = (Genre) o;
-        return genre == genre1.genre && book.equals(genre1.book);
+        GenreBook genreBook1 = (GenreBook) o;
+        return genre == genreBook1.genre && book.equals(genreBook1.book);
     }
 
     @Override

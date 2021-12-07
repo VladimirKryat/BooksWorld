@@ -4,7 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import ru.lesson.springBootProject.models.Author;
 import ru.lesson.springBootProject.models.Book;
-import ru.lesson.springBootProject.models.Genre;
+import ru.lesson.springBootProject.models.GenreBook;
 import ru.lesson.springBootProject.models.GenreName;
 import java.util.HashSet;
 import java.util.Objects;
@@ -32,7 +32,7 @@ public class BookDto{
         this.title=book.getTitle();
         this.likes=likes;
         this.meIsLiked=meIsLiked;
-        this.genres =book.getGenres().stream().map(Genre::getGenre).collect(Collectors.toSet());
+        this.genres =book.getGenres().stream().map(GenreBook::getGenre).collect(Collectors.toSet());
     }
 
     @Override

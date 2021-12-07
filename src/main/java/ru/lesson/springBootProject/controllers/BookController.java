@@ -3,7 +3,6 @@ package ru.lesson.springBootProject.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -12,27 +11,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 import ru.lesson.springBootProject.dto.BookDto;
 import ru.lesson.springBootProject.models.Book;
-import ru.lesson.springBootProject.models.Genre;
 import ru.lesson.springBootProject.models.GenreName;
 import ru.lesson.springBootProject.security.details.UserDetailsImpl;
 import ru.lesson.springBootProject.services.AuthorService;
 import ru.lesson.springBootProject.services.BookService;
+import ru.lesson.springBootProject.services.filters.FilterBook;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 
@@ -112,21 +107,33 @@ public class BookController {
     public String getBooks(
             Model model,
             @RequestParam(required = false) String message,
+            @RequestParam(name = "sortedByLikes", required = false) String sortedByLikes,
+            @RequestParam(name = "genreName", required = false) String genreName,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PageableDefault(size=3, sort ={"bookId"}, direction = Sort.Direction.ASC )Pageable pageable,
             HttpServletRequest request
-            ){
+    ){
         if (message!=null){
             model.addAttribute("message",message);
         }
-        Page<BookDto> page = bookService.findAll(userDetails.getUser().getUserId(),pageable);
-        if (page.getTotalPages()-1<page.getNumber())
-        {
-            pageable= PageRequest.of(page.getTotalPages()-1,pageable.getPageSize(),pageable.getSort());
-            page = bookService.findAll(userDetails.getUser().getUserId(), pageable);
+        FilterBook filterBook = null;
+        //если введены значения отличные от NONE сохраняем их
+        if ((sortedByLikes!=null&&!sortedByLikes.equals("NONE"))||(genreName!=null&&!genreName.equals("NONE"))){
+            filterBook = new FilterBook();
+            if (genreName!=null&&!genreName.equals("NONE")) filterBook.setGenreName(GenreName.valueOf(genreName));
+            if (sortedByLikes!=null&&!sortedByLikes.equals("NONE")) filterBook.setSortedByLikes(FilterBook.SortedByLikes.valueOf(sortedByLikes));
+            model.addAttribute("url",request.getRequestURL()+"?"+ filterBook.toStringURLParams()+"&amp;");
+            model.addAttribute("filterBook",filterBook);
         }
+        else {
+            model.addAttribute("url",request.getRequestURL()+"?");
+        }
+        Page<BookDto> page = bookService.findAllWithFilter(userDetails.getUser().getUserId(),pageable, filterBook);
+        model.addAttribute("allGenres",GenreName.values());
         model.addAttribute("books",page);
-        model.addAttribute("url",request.getRequestURL());
+        if (page.getNumberOfElements()==0) {
+            model.mergeAttributes(Map.of("message","No content. Please, choose another filter param"));
+        }
         return "bookList";
     }
 

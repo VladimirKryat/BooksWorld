@@ -70,6 +70,7 @@
 <#macro listBookCard>
     <#include "security.ftl">
     <#import "pager.ftl" as pager>
+    <@filterNavBar/>
     <div class="card-columns">
 
         <#list books.getContent() as bookItem>
@@ -80,7 +81,7 @@
                 <div class="card-body">
                     <h5 class="card-title">
 
-                            ${bookItem.title}
+                        ${bookItem.title}
 
                     </h5>
                     <h6 class="card-subtitle mb-2 text-muted">
@@ -117,8 +118,8 @@
                     </div>
                     <div class="card-footer text-center">
                         <#if isManager>
-                                <a href="/manager/bookEditor?book=${bookItem.bookId}">Change book</a>
-                                <a class="btn btn-outline-danger" href="/manager/bookDelete?book=${bookItem.bookId}">Delete book</a>
+                            <a href="/manager/bookEditor?book=${bookItem.bookId}">Change book</a>
+                            <a class="btn btn-outline-danger" href="/manager/bookDelete?book=${bookItem.bookId}">Delete book</a>
                         </#if>
                     </div>
                 </div>
@@ -126,4 +127,35 @@
         </#list>
     </div>
     <@pager.pager url books/>
+</#macro>
+
+<#--    Form for Filter BookList by Genre or Sorted by Likes-->
+<#macro filterNavBar>
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand"></a>
+        <form class="form-inline" method="get">
+            <label for="inputState">Genre:</label>
+            <select id="inputState" class="form-control ml-2 mr-3" name="genreName">
+                <option disabled selected value="NONE">Choose genre</option>
+                <#if allGenres??>
+                    <#list allGenres as genre>
+                        <option <#if filterBook??&&filterBook.genreName??&&filterBook.genreName==genre>selected</#if>>${genre}</option>
+                    </#list>
+                </#if>
+            </select>
+
+            <label for="selectOrder">Sorted:</label>
+            <select class="form-control ml-2 mr-3" name="sortedByLikes" id="selectOrder">
+                <option value="NONE" <#if filterBook??&&filterBook.sortedByLikes=="NONE">selected</#if>>None</option>
+                <option value="ASC" <#if filterBook??&&filterBook.sortedByLikes=="ASC">selected</#if>>By likes ▲</option>
+                <option value="DESC" <#if filterBook??&&filterBook.sortedByLikes=="DESC">selected</#if>>By likes ▼</option>
+            </select>
+
+
+            <button class="btn btn-outline-success my-2 my-sm-0 mr-3" type="submit">Search</button>
+            <a class="btn btn-outline-success my-2 my-sm-0" type="reset" href="/bookList">Clear</a>
+
+        </form>
+    </nav>
+
 </#macro>

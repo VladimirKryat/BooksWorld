@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import ru.lesson.springBootProject.dto.BookDto;
 import ru.lesson.springBootProject.models.Book;
 import ru.lesson.springBootProject.models.User;
+import ru.lesson.springBootProject.services.filters.FilterBook;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface BookService {
     void changeGenre(Book book, String[] genresName);
 
     void delete(Long bookId);
+
+    Page<BookDto> findAllWithFilter(Long userId, Pageable pageable, FilterBook filterBook);
 }
