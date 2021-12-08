@@ -90,7 +90,7 @@ public class CommentController {
             }
             //проверяем, что файл сохранился без исключений
             if (isCorrect) {
-                comment.setAuthor(userDetails.getUser());
+                comment.setUser(userDetails.getUser());
                 commentService.save(comment);
                 model.addAttribute("comment", null);
                 return "redirect:/comment";
@@ -121,7 +121,7 @@ public class CommentController {
             return "userComment";
         }
         //если пользователь редактирует свой коммент, то сохраняем его
-        if (oldComment.getAuthor().equals(userDetails.getUser())){
+        if (oldComment.getUser().equals(userDetails.getUser())){
             //если добавлен новый файл
             if (ControllerUtils.checkFilename(file)) {
                 try {
@@ -143,7 +143,7 @@ public class CommentController {
                 changeComment.setFilename(oldComment.getFilename());
             }
             model.addAttribute("comment", null);
-            changeComment.setAuthor(userDetails.getUser());
+            changeComment.setUser(userDetails.getUser());
             commentService.save(changeComment);
         }
         model.addAttribute("model",null);

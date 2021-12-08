@@ -75,5 +75,6 @@ public class User implements Serializable {
     @Fetch(FetchMode.SUBSELECT)
     private Set<Author> subscriptions = new HashSet<>();
 
-
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", targetEntity = Comment.class)
+    private Set<Comment> comments = new HashSet<>();
 }

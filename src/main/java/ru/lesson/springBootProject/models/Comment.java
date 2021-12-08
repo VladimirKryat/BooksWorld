@@ -22,37 +22,30 @@ import java.util.Arrays;
 @Builder
 
 @Entity
-@Table(schema = "public", name = "comment")
-public class Comment {
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public abstract class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "comment_id_pkey_seq")
     @Column(name = "comment_id")
     private Long commentId;
+
     @Length(max=2048,  message = "Too long text of comment (more than 2kB)")
     @Column(length = 2048)
     private String text;
+
     @Min(value = 1, message = "Value of stars from 1 to 5")
     @Max(value = 5, message = "Value of stars from 1 to 5")
     @NotNull(message = "Stars cannot be null")
     @Column(name="stars", nullable = false)
     private Byte stars;
+
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = User.class)
     @Fetch(FetchMode.SELECT)
     @BatchSize(size = 10)
     @JoinColumn(name = "user_id")
-    private User author;
+    private User user;
 
     @Column(name = "filename")
     private String filename;
 
-    public String starsByShape(){
-        if(stars!=null){
-            char[] chars = new char[this.stars];
-            Arrays.fill(chars,'\u2605');
-            return new String(chars);
-        }
-        else {
-            return "";
-        }
-    }
 }

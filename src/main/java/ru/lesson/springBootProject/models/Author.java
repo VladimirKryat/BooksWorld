@@ -49,11 +49,14 @@ public class Author implements Serializable {
             fetch = FetchType.LAZY,targetEntity = Book.class,
             cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     @Fetch(FetchMode.SUBSELECT)
-    private Set<Book> books=new HashSet<>();
+    private Set<Book> books = new HashSet<>();
 
     @ManyToMany(mappedBy = "subscriptions",targetEntity = User.class, fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @Fetch(FetchMode.SUBSELECT)
     private Set<User> subscriptions=new HashSet<>();
+
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, targetEntity = CommentAuthor.class)
+    private Set<CommentAuthor> comments = new HashSet<>();
 }
