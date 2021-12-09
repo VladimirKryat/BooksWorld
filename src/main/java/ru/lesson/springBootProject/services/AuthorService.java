@@ -1,6 +1,7 @@
 package ru.lesson.springBootProject.services;
 
 import org.springframework.transaction.annotation.Transactional;
+import ru.lesson.springBootProject.dto.AuthorInfoDto;
 import ru.lesson.springBootProject.exceptions.AuthorServiceException;
 import ru.lesson.springBootProject.models.Author;
 import ru.lesson.springBootProject.models.User;
@@ -29,4 +30,8 @@ public interface AuthorService {
     Author findById(Long authorId) throws AuthorServiceException;
 
     boolean existAuthorWithSubscribers(Long authorId, Iterable<User> users);
+
+    Author findAllComments(Author author);
+
+    AuthorInfoDto getAuthorInfoDto(Long userId,Long authorId);
 }

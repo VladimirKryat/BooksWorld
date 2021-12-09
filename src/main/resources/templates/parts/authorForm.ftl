@@ -65,25 +65,21 @@
         <p class="card-text">
             ${author.biography!""}
         </p>
-        <#if countSubscribers??>
+        <#if author.countSubscribers?? && author.countSubscribers gt 0>
             <h6 class="card-subtitle mb-2 text-muted">
-                Subscribers: ${countSubscribers}
+                Subscribers: ${author.countSubscribers}
             </h6>
         </#if>
-        <#if countBooksInShop??>
+        <#if author.countBook?? && author.countBook gt 0>
             <h6 class="card-subtitle mb-2 text-muted">
-                Count publications: ${countBooksInShop}
+                Count publications: ${author.countBook}
             </h6>
         </#if>
 
-        <#if !isSubscription??>
-            <#assign isSubscription = true />
-        </#if>
-
-        <#if !isSubscription>
-            <a href="/subscribe/${author.authorId}" class="btn btn-outline-success">Subscribe</a>
-        <#else >
+        <#if author.isSubscription()>
             <a href="/unsubscribe?author=${author.authorId}" class="btn btn-outline-danger">Unsubscribe</a>
+        <#else >
+            <a href="/subscribe/${author.authorId}" class="btn btn-outline-success">Subscribe</a>
         </#if>
         <#include "security.ftl">
         <#if isManager>

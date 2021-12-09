@@ -117,11 +117,9 @@ public class UserServiceImpl implements UserService {
         return (!passwordConfirm.isEmpty() && passwordConfirm.equals(password));
     }
 
-    @Transactional
     @Override
     public User getSubscriptions(User user) throws UserServiceException{
-        User result = userRepository.findByUsername(user.getUsername()).orElseThrow(()->new UserServiceException("Invalid user data"));
-        result.getSubscriptions().size();
+        User result = userRepository.findWithSubscriptions(user.getUserId()).orElseThrow(()->new UserServiceException("Invalid user data. Can't found user by ID"));
         return result;
     }
 
@@ -129,7 +127,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User addSubscriptions(User user, Author author)throws UserServiceException{
-        User userResult = userRepository.findById(user.getUserId()).orElseThrow(()->new UserServiceException("Invalid user data"));
+        User userResult = userRepository.findById(user.getUserId()).orElseThrow(()->new UserServiceException("Invalid user data. Can't found user by ID"));
         try{
             Author authorResult = authorService.getSubscriptions(author);
             if (!userResult.getSubscriptions().contains(authorResult)){

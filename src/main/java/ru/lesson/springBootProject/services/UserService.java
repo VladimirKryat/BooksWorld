@@ -22,7 +22,7 @@ public interface UserService extends UserDetailsService {
     }
     boolean checkPasswordConfirm(String password, String passwordConfirm);
 
-    @Transactional
+
     User getSubscriptions(User user) throws UserServiceException;
 
     @Transactional

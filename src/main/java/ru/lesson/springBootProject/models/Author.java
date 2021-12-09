@@ -12,13 +12,16 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Data
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
+@Getter
+@Setter
 @Table(uniqueConstraints =@UniqueConstraint(name = "author_unique", columnNames = {"name","birthday"}))
 public class Author implements Serializable {
 
@@ -43,8 +46,7 @@ public class Author implements Serializable {
     @Length(max = 3072, message = "Too long biography (more than 3kB)")
     private String biography;
 
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
+
     @ManyToMany(mappedBy = "authors",
             fetch = FetchType.LAZY,targetEntity = Book.class,
             cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
@@ -52,11 +54,32 @@ public class Author implements Serializable {
     private Set<Book> books = new HashSet<>();
 
     @ManyToMany(mappedBy = "subscriptions",targetEntity = User.class, fetch = FetchType.LAZY)
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
     @Fetch(FetchMode.SUBSELECT)
     private Set<User> subscriptions=new HashSet<>();
 
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, targetEntity = CommentAuthor.class)
+    @Fetch(FetchMode.SUBSELECT)
     private Set<CommentAuthor> comments = new HashSet<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Author author = (Author) o;
+        return name.equals(author.name) && birthday.equals(author.birthday);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, birthday);
+    }
+
+    @Override
+    public String toString() {
+        return "Author{" +
+                "authorId=" + authorId +
+                ", name='" + name + '\'' +
+                ", birthday=" + birthday +
+                '}';
+    }
 }

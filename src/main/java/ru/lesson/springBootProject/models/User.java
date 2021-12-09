@@ -10,9 +10,11 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
@@ -23,7 +25,6 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    @EqualsAndHashCode.Exclude
     private Long userId;
 
     @NotEmpty(message = "Username cannot be empty")
@@ -47,8 +48,6 @@ public class User implements Serializable {
 
     @ManyToMany (fetch = FetchType.LAZY, targetEntity = Book.class, mappedBy = "likes")
     @Fetch(FetchMode.SUBSELECT)
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
     private Set<Book> likes = new HashSet<>();
 
 
@@ -70,11 +69,31 @@ public class User implements Serializable {
             joinColumns = {@JoinColumn(name="user_id")},
             inverseJoinColumns = @JoinColumn(name="author_id")
     )
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
     @Fetch(FetchMode.SUBSELECT)
     private Set<Author> subscriptions = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", targetEntity = Comment.class)
     private Set<Comment> comments = new HashSet<>();
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", state=" + state +
+                ", email='" + email + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return username.equals(user.username) && state == user.state && email.equals(user.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, state, email);
+    }
 }

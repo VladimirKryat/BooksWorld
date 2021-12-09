@@ -52,14 +52,14 @@ public class Book implements Serializable {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<GenreBook> genres = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "book",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY,targetEntity = CommentBook.class, mappedBy = "book",cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CommentBook> comments = new HashSet<>();
 
     @Override
     public String toString() {
         return "Book{" +
                 "bookId=" + bookId +
-                ", title='" + title + '\'' +
+                ", title='" + title +
                 ", authors= " + authors.stream().map(x->x.getName()).collect(Collectors.joining(", ")) +
                 '}';
     }

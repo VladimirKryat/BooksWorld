@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.lesson.springBootProject.dto.AuthorInfoDto;
 import ru.lesson.springBootProject.models.Author;
 import ru.lesson.springBootProject.models.User;
 import ru.lesson.springBootProject.security.details.UserDetailsImpl;
@@ -30,9 +31,8 @@ public class AuthorController {
     @Autowired
     private AuthorService authorService;
     @Autowired
-    private UserService userService;
-    @Autowired
     private BookService bookService;
+
     @GetMapping("/manager/authorEditor")
     public String getAuthorEditor(
             @RequestParam(name="author", required = false) Author author,
@@ -44,6 +44,7 @@ public class AuthorController {
         }
         return "authorEditor";
     }
+
     @PostMapping("/manager/authorEditor")
     public String setAuthor(
             @Valid Author author,
@@ -93,12 +94,9 @@ public class AuthorController {
             HttpServletRequest request,
             Model model
     ){
-        Author author = authorService.findById(authorId);
+        AuthorInfoDto author = authorService.getAuthorInfoDto(userDetails.getUser().getUserId(), authorId);
         model.addAttribute("author",author);
-        model.addAttribute("isSubscription", authorService.existAuthorWithSubscribers(authorId, Collections.singleton(userDetails.getUser())));
-        model.addAttribute("countSubscribers",authorService.countSubscribers(author.getAuthorId()));
-        model.addAttribute("books",bookService.findAllByAuthors(userDetails.getUser().getUserId(), pageable,author));
-        model.addAttribute("countBooksInShop",authorService.countBook(author.getAuthorId()));
+        model.addAttribute("books",bookService.findAllByAuthors(userDetails.getUser().getUserId(),authorId, pageable));
         model.addAttribute("url",request.getRequestURL()+"?author="+authorId+"&amp;");
         return "authorInfo";
     }

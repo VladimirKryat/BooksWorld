@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -37,8 +38,6 @@ public class BookController {
     private BookService bookService;
     @Autowired
     private AuthorService authorService;
-    @Autowired
-    private EntityManager em;
     @Value("${default.book}")
     private String defaultBook;
     @Value("${upload.book.img.path}")

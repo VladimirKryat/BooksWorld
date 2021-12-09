@@ -3,6 +3,7 @@ package ru.lesson.springBootProject.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.lesson.springBootProject.dto.AuthorInfoDto;
 import ru.lesson.springBootProject.exceptions.AuthorServiceException;
 import ru.lesson.springBootProject.models.Author;
 import ru.lesson.springBootProject.models.User;
@@ -86,6 +87,16 @@ public class AuthorServiceImpl implements AuthorService{
     @Override
     public boolean existAuthorWithSubscribers(Long authorId, Iterable<User> users){
         return authorRepository.existsAuthorByAuthorIdAndSubscriptionsIn(authorId,users);
+    }
+
+    @Override
+    public Author findAllComments(Author author) {
+        return null;
+    }
+
+    @Override
+    public AuthorInfoDto getAuthorInfoDto(Long userId,Long authorId) {
+        return authorRepository.findAuthorInfo(userId, authorId).get();
     }
 
 }

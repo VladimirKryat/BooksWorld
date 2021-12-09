@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import ru.lesson.springBootProject.exceptions.UserServiceException;
 import ru.lesson.springBootProject.exceptions.UsernameNotUniqueException;
-import ru.lesson.springBootProject.models.CaptchaResponseDto;
+import ru.lesson.springBootProject.dto.CaptchaResponseDto;
 import ru.lesson.springBootProject.models.User;
 import ru.lesson.springBootProject.services.UserService;
 

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 import ru.lesson.springBootProject.dto.BookDto;
+import ru.lesson.springBootProject.exceptions.BookServiceException;
 import ru.lesson.springBootProject.models.*;
 import ru.lesson.springBootProject.repositories.BookRepository;
 import ru.lesson.springBootProject.repositories.GenreRepository;
@@ -95,6 +96,7 @@ public class BookServiceImpl implements BookService{
         }
         //page==null когда не задан Жанр для фильтрации или FilterBook
         if (page ==null) page= bookRepository.findAll(userId,pageable);
+
         //если текущая страница дальше максимальной, то рекурсивно запрашиваем последнюю возможную страницу
         if (page.getNumber()>page.getTotalPages())
         {
@@ -105,7 +107,12 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public Page<BookDto> findAllByAuthors(Long userId, Pageable pageable, Author author) {
-        return bookRepository.findAllByAuthors(userId, pageable, author);
+    public Page<BookDto> findAllByAuthors(Long userId,Long authorId, Pageable pageable) {
+        return bookRepository.findAllByAuthors(userId, authorId, pageable);
+    }
+
+    @Override
+    public Book findById(Long bookId) {
+        return bookRepository.findById(bookId).orElseGet(null);
     }
 }

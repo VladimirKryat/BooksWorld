@@ -3,6 +3,7 @@ package ru.lesson.springBootProject.models;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
@@ -12,7 +13,7 @@ import java.util.Objects;
 @Setter
 @Table(name = "genre_book")
 @Builder
-public class GenreBook {
+public class GenreBook implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "genre_book_id")

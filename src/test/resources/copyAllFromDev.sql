@@ -47,3 +47,10 @@ INSERT INTO public.user_like_book (book_id, user_id) VALUES (2, 3);
 INSERT INTO public.user_like_book (book_id, user_id) VALUES (5, 3);
 INSERT INTO public.user_like_book (book_id, user_id) VALUES (3, 3);
 INSERT INTO public.user_like_book (book_id, user_id) VALUES (5, 1);
+
+INSERT INTO public.comment_book (filename, stars, text, user_id, book_id) VALUES ( null, 4, 'comment book', 1, 1);
+
+INSERT INTO public.comment_author (filename, stars, text, user_id, author_id) VALUES ( null, 5, 'Comment first', 1, 2);
+INSERT INTO public.comment_author (filename, stars, text, user_id, author_id) VALUES ( null, 4, 'new comment by admin', 1, 2);
+INSERT INTO public.comment_author (filename, stars, text, user_id, author_id) VALUES ( null, 3, 'Third comment', 1, 1);
+INSERT INTO public.comment_author (filename, stars, text, user_id, author_id) VALUES ( null, 1, 'OHH SHET', 2, 3);

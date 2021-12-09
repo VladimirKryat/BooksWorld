@@ -82,9 +82,7 @@
                 </#if>
                 <div class="card-body">
                     <h5 class="card-title">
-
                         ${bookItem.title}
-
                     </h5>
                     <h6 class="card-subtitle mb-2 text-muted">
 
@@ -118,12 +116,12 @@
                             ${bookItem.likes}
                         </a>
                     </div>
-                    <div class="card-footer text-center">
-                        <#if isManager>
+                    <#if isManager>
+                        <div class="card-footer text-center">
                             <a href="/manager/bookEditor?book=${bookItem.bookId}">Change book</a>
                             <a class="btn btn-outline-danger" href="/manager/bookDelete?book=${bookItem.bookId}">Delete book</a>
-                        </#if>
-                    </div>
+                        </div>
+                    </#if>
                 </div>
             </div>
         </#list>
