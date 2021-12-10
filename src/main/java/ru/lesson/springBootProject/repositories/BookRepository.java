@@ -15,7 +15,7 @@ import java.util.Set;
 public interface BookRepository extends JpaRepository<Book,Long> {
     @Query(value = "select new ru.lesson.springBootProject.dto.BookDto (b, count(lk), sum(case when :userId = lk.userId then 1 else 0 end)>0) " +
             "from Book b left join b.likes lk group by b",
-    countQuery = "select count(b) from  Book b")
+    countQuery = "select count(b) from  Book b where :userId = :userId")
     Page<BookDto> findAll(@Param("userId") Long userId, Pageable pageable);
 
     @Query("select b.genres from Book b where b.bookId=:bookId")
@@ -23,7 +23,7 @@ public interface BookRepository extends JpaRepository<Book,Long> {
 
     @Query(value = "select new ru.lesson.springBootProject.dto.BookDto (b, count(lk), sum(case when :userId = lk.userId then 1 else 0 end)>0) " +
             "from Book b left join b.likes lk where exists (select gn from GenreBook gn where gn.book=b and gn.genre=:genreFilter) group by b",
-    countQuery = "select count(b) from Book b left join b.genres gn where gn.genre=:genreFilter")
+    countQuery = "select count(b) from Book b left join b.genres gn where gn.genre=:genreFilter and :userId = :userId")
     Page<BookDto> findAllWithParam(@Param("userId") Long userId, Pageable pageable, @Param("genreFilter") GenreName genreFilter);
 
 @Query(value = "select new ru.lesson.springBootProject.dto.BookDto (b, count(lk), sum(case when :userId = lk.userId then 1 else 0 end)>0) " +

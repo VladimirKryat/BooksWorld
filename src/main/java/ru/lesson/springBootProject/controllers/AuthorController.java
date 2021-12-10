@@ -1,6 +1,7 @@
 package ru.lesson.springBootProject.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -90,14 +91,16 @@ public class AuthorController {
     public String getAuthorInfo(
             @RequestParam(name = "author") Long authorId,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @PageableDefault(size=6, sort ={"bookId"}, direction = Sort.Direction.DESC ) Pageable pageable,
+            @Qualifier("books") @PageableDefault( size=6, sort ={"bookId"}, direction = Sort.Direction.DESC ) Pageable pageableBooks,
+            @Qualifier("comments") @PageableDefault(sort = {"commentId"}, direction = Sort.Direction.DESC, size = 6) Pageable pageableComments,
             HttpServletRequest request,
             Model model
     ){
         AuthorInfoDto author = authorService.getAuthorInfoDto(userDetails.getUser().getUserId(), authorId);
         model.addAttribute("author",author);
-        model.addAttribute("books",bookService.findAllByAuthors(userDetails.getUser().getUserId(),authorId, pageable));
+        model.addAttribute("books",bookService.findAllByAuthors(userDetails.getUser().getUserId(),authorId, pageableBooks));
         model.addAttribute("url",request.getRequestURL()+"?author="+authorId+"&amp;");
+        model.addAttribute("commentsPage",authorService.findAllComments(authorId,pageableComments));
         return "authorInfo";
     }
 }

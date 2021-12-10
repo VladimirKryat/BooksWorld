@@ -1,14 +1,19 @@
 package ru.lesson.springBootProject.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.lesson.springBootProject.dto.AuthorInfoDto;
 import ru.lesson.springBootProject.exceptions.AuthorServiceException;
 import ru.lesson.springBootProject.models.Author;
+import ru.lesson.springBootProject.models.Comment;
+import ru.lesson.springBootProject.models.CommentAuthor;
 import ru.lesson.springBootProject.models.User;
 import ru.lesson.springBootProject.repositories.AuthorRepository;
 import ru.lesson.springBootProject.repositories.BookRepository;
+import ru.lesson.springBootProject.repositories.CommentAuthorRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +23,7 @@ public class AuthorServiceImpl implements AuthorService{
     @Autowired
     private AuthorRepository authorRepository;
     @Autowired
-    private BookRepository bookRepository;
+    private CommentAuthorRepository commentAuthorRepository;
 
     @Override
     public Author findByName(String name)throws AuthorServiceException{
@@ -90,8 +95,8 @@ public class AuthorServiceImpl implements AuthorService{
     }
 
     @Override
-    public Author findAllComments(Author author) {
-        return null;
+    public Page<CommentAuthor> findAllComments(Long authorId, Pageable pageable) {
+        return commentAuthorRepository.findAllByAuthor_AuthorId(authorId,pageable);
     }
 
     @Override

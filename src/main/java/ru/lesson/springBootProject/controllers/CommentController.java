@@ -10,19 +10,19 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.lesson.springBootProject.models.Comment;
+import ru.lesson.springBootProject.models.*;
 import ru.lesson.springBootProject.security.details.UserDetailsImpl;
+import ru.lesson.springBootProject.services.AuthorService;
+import ru.lesson.springBootProject.services.BookService;
 import ru.lesson.springBootProject.services.CommentService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Map;
 
 @Controller
@@ -33,8 +33,12 @@ public class CommentController {
     private String uploadPath;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private AuthorService authorService;
+    @Autowired
+    private BookService bookService;
 
-    @GetMapping(value = {"/comment","/comment/{userId}","/comment/{userId}/{commentId}"})
+    @GetMapping(value = {"/comment","/comment/{userId}"})
     public String getListComment(
             Map<String, Object> mapModel,
             @PathVariable (name = "userId", required = false) Long userId,
@@ -49,7 +53,7 @@ public class CommentController {
         }
         Page<Comment> page;
         if (userId!=null){
-            page = commentService.findAllByAuthor(userId,pageable);
+            page = commentService.findAllByUser(userId,pageable);
         }
         else {
             page = commentService.findAll(pageable);
@@ -58,18 +62,50 @@ public class CommentController {
         mapModel.put("url", request.getRequestURL());
         return "comment";
     }
-    @PostMapping(value = {"/comment/{userId}","/comment"})
-    public String addComment(
+
+
+    @GetMapping(value = "/commentedit")
+    public String editComment(
+            @RequestParam(name = "comment") Long commentId,
+            @RequestHeader(required = false) String referer,
+            Model model
+    ){
+        model.addAttribute("refUrl",referer);
+        Comment oldComment=null;
+        if (referer.toLowerCase(Locale.ROOT).contains("authorinfo")){
+            oldComment=new CommentAuthor();
+            oldComment.setCommentId(commentId);
+        }else if(referer.toLowerCase(Locale.ROOT).contains("bookinfo")){
+            oldComment =new CommentBook();
+            oldComment.setCommentId(commentId);
+        }
+        oldComment = commentService.findByIdAndInstanceofWithOwner(oldComment).orElseGet(null);
+        model.addAttribute("comment",oldComment);
+        return"comment";
+    }
+
+    @PostMapping(value = {"/commentauthor","/commentauthor","/commentedit"})
+    public String addCommentAuthor(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Valid Comment comment,
+            @RequestParam(name = "ownerId") Long ownerId,
+            @RequestParam(name="refUrl", required = false) String refUrl,
+            @RequestHeader(required = false) String referer,
             BindingResult bindingResult,
-//            bindingResult должен идти перед model, иначе ошибки будут проходить без обработки
             Model model,
             @RequestParam("file") MultipartFile file,
-            @PageableDefault(sort = {"commentId"}, direction = Sort.Direction.ASC, size = 6) Pageable pageable
+            @PageableDefault(sort = {"commentId"}, direction = Sort.Direction.ASC, size = 6) Pageable pageable,
+            HttpServletRequest request
     ){
         boolean isCorrect = true;
-        if (bindingResult.hasErrors()){
+        //если пользователь редактирует не свой коммент отправляем его на главную страницу
+        if (comment.getUser()!=null
+                &&comment.getCommentId()!=null
+                &&comment.getCommentId()>0
+                &&!comment.getUser().equals(userDetails.getUser())){
+            return "redirect:/";
+        }
+            if (bindingResult.hasErrors()){
             isCorrect=false;
             //преобразуем ошибки в мапу (название поля+Error,message)
             Map<String, String> errorMap = ControllerUtils.getErrorMap(bindingResult);
@@ -84,72 +120,45 @@ public class CommentController {
                 } catch (IOException e) {
                     isCorrect=false;
                     model.addAttribute("fileError",e.getMessage());
-                    model.addAttribute("comment",comment);
-                    e.printStackTrace();
+                    //                    e.printStackTrace();
                 }
             }
             //проверяем, что файл сохранился без исключений
             if (isCorrect) {
                 comment.setUser(userDetails.getUser());
-                commentService.save(comment);
-                model.addAttribute("comment", null);
-                return "redirect:/comment";
-            }
-        }
-        model.addAttribute("comments", commentService.findAll(pageable));
-        return "comment";
-    }
-
-
-    @PostMapping("/comment/{userId}/{commentId}")
-    public String saveChangingComment(
-            @PathVariable Long userId,
-            @PathVariable (name = "commentId") Comment oldComment,
-            @Valid Comment changeComment,
-            BindingResult bindingResult,
-            @RequestParam("file") MultipartFile file,
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @PageableDefault(sort = {"commentId"}, direction = Sort.Direction.ASC, size = 6) Pageable pageable,
-            Model model
-    )
-    {
-        if (bindingResult.hasErrors()){
-            //преобразуем ошибки в мапу (название поля+Error,message)
-            Map<String, String> errorMap = ControllerUtils.getErrorMap(bindingResult);
-            model.mergeAttributes(errorMap);
-            model.addAttribute("comment",changeComment);
-            return "userComment";
-        }
-        //если пользователь редактирует свой коммент, то сохраняем его
-        if (oldComment.getUser().equals(userDetails.getUser())){
-            //если добавлен новый файл
-            if (ControllerUtils.checkFilename(file)) {
-                try {
-                    changeComment.setFilename(ControllerUtils.saveFileWithNewFilename(file,uploadPath));
-                } catch (IOException e) {
-                    model.addAttribute("fileError",e.getMessage());
-                    model.addAttribute("comment",changeComment);
-                    e.printStackTrace();
-                    return "userComment";
+                //если пришли с commentedit могли не получить ownerId
+                Comment commentOld =null;
+                if (ownerId==null || ownerId<=0){
+                    commentOld = commentService.findByIdAndInstanceofWithOwner(comment).get();
+                    commentOld.setFilename(comment.getFilename());
+                    commentOld.setUser(comment.getUser());
+                    commentOld.setText(comment.getText());
+                    commentOld.setStars(comment.getStars());
                 }
-                //если сохранение файла прошло успешно, удаляем старый файл
-                File oldFile = new File(uploadPath+"/"+oldComment.getFilename());
-                if (oldFile.exists()){
-                    oldFile.delete();
+                else if (request.getRequestURL().indexOf("author")!=-1){
+                    Author author = authorService.findById(ownerId);
+                    commentOld = new CommentAuthor(comment, author);
+                }
+                else if (request.getRequestURL().indexOf("book")!=-1){
+                    Book book = bookService.findById(ownerId);
+                    commentOld = new CommentBook(comment, book);
+                }
+                commentService.save(commentOld);
+                if (refUrl==null||refUrl.isBlank()||refUrl.isEmpty()){
+                    return "redirect:"+referer;
+                }else {
+                    return "redirect:"+refUrl;
                 }
             }
-            //если новый файл не введён, то в изменяющемся коменте, нужно сохранить старое значение filename
-            else{
-                changeComment.setFilename(oldComment.getFilename());
-            }
-            model.addAttribute("comment", null);
-            changeComment.setUser(userDetails.getUser());
-            commentService.save(changeComment);
         }
-        model.addAttribute("model",null);
-        model.addAttribute("comments", commentService.findAllByAuthor(userDetails.getUser().getUserId(),pageable));
+        //сохраняем прошлую ссылку если она не сохранена(в случае если пришли со страницы authorinfo)
+        if(refUrl==null){
+            refUrl=referer;
+        }
+        model.addAttribute("comment",comment);
+        model.addAttribute("refUrl",refUrl);
+        model.addAttribute("ownerId",ownerId);
         return "comment";
     }
-
 
 }

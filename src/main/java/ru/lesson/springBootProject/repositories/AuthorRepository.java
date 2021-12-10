@@ -1,10 +1,13 @@
 package ru.lesson.springBootProject.repositories;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.lesson.springBootProject.dto.AuthorInfoDto;
 import ru.lesson.springBootProject.models.Author;
+import ru.lesson.springBootProject.models.Comment;
 import ru.lesson.springBootProject.models.User;
 
 import java.time.LocalDate;

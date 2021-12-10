@@ -6,10 +6,13 @@
     <div class="d-flex justify-content-center">
         <div class="card w-75">
             <@a.cardBody author/>
-            <div class="card-footer text-center mt-2">
-                <@c.addCommentForm "/commentauthor" author.authorId/>
-            </div>
         </div>
     </div>
     <@b.listBookCard false/>
+
+    <div class="card-footer text-center mt-2">
+        <@c.addCommentForm "/commentauthor" author.authorId/>
+        <@c.listCommentCard commentsPage/>
+    </div>
+
 </@p.page>

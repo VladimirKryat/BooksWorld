@@ -126,7 +126,7 @@
             </div>
         </#list>
     </div>
-    <@pager.pager url books/>
+    <@pager.pager url books "books"/>
 </#macro>
 
 <#--    Form for Filter BookList by Genre or Sorted by Likes-->

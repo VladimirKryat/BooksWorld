@@ -7,5 +7,5 @@ import ru.lesson.springBootProject.models.Comment;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     Page<Comment> findAll(Pageable pageable);
-    Page<Comment> findAllByAuthor_UserId(Long userId, Pageable pageable);
+    Page<Comment> findAllByUser_UserId(Long userId, Pageable pageable);
 }
