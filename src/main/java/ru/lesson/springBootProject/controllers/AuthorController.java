@@ -9,6 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,32 +53,22 @@ public class AuthorController {
             BindingResult bindingResult,
             Model model
     ){
-        boolean isCorrectBirthday = true;
-        boolean isCorrectDateDeath = true;
         //если null то ошибка добавится из binding
         //а если день рождения в будущем, то добавляем ошибку сами
-        if (author.getBirthday()!=null) {
-            isCorrectBirthday = author.getBirthday().isBefore(LocalDate.now());
+        if (author.getBirthday()!=null && author.getBirthday().isBefore(LocalDate.now())) {
+            bindingResult.addError(new FieldError("author","birthday","Birthday can't be in the future"));
         }
-        if (author.getDateOfDeath()!=null){
-            isCorrectDateDeath=author.getDateOfDeath().isBefore(LocalDate.now());
+        if (author.getDateOfDeath()!=null && author.getDateOfDeath().isBefore(LocalDate.now())){
+            bindingResult.addError(new FieldError("author","dateOfDeath","Don't fill if it didn't happen"));
         }
         //если обе даты корректно введены, проверяем их очерёдность
         //нужно проверить что дата смерти введена
-        if (isCorrectBirthday && isCorrectDateDeath && author.getDateOfDeath()!=null && !author.getBirthday().isBefore(author.getDateOfDeath())){
-            isCorrectBirthday = false;
-            isCorrectDateDeath = false;
+        if (author.getBirthday()!=null && author.getDateOfDeath()!=null && !author.getBirthday().isBefore(author.getDateOfDeath())){
+            bindingResult.addError(new FieldError("author","birthday","Birthday cannot be later than the date of death"));
+            bindingResult.addError(new FieldError("author","dateOfDeath","Date of death cannot be earlier than the birthday"));
         }
 
-        if (bindingResult.hasErrors() ||
-                !isCorrectDateDeath ||
-                !isCorrectBirthday){
-            if (!isCorrectDateDeath){
-                model.addAttribute("dateOfDeathError", "Date of death incorrect");
-            }
-            if (!isCorrectBirthday){
-                model.addAttribute("birthdayError", "Birthday incorrect");
-            }
+        if (bindingResult.hasErrors()){
             model.mergeAttributes(ControllerUtils.getErrorMap(bindingResult));
             model.addAttribute("author", author);
             return "authorEditor";

@@ -91,7 +91,7 @@ public class BookController {
             }
         }
         //если книга уже есть восстанавливаем лайки и старый список жанров
-        if (book.getBookId()!=null){
+        if (book.getBookId()!=null&&oldBook!=null){
             book.setLikes(oldBook.getLikes());
             book.setGenres(oldBook.getGenres());
         }

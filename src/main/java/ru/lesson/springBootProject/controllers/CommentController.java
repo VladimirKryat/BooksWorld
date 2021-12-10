@@ -38,6 +38,7 @@ public class CommentController {
     @Autowired
     private BookService bookService;
 
+    //!!!!!!!!!!нуждается в рефакторинге
     @GetMapping(value = {"/comment","/comment/{userId}"})
     public String getListComment(
             Map<String, Object> mapModel,
@@ -83,7 +84,7 @@ public class CommentController {
         model.addAttribute("comment",oldComment);
         return"comment";
     }
-
+//    В refUrl может прийти ссылка на страницу куда нужно вернуться (если пост запрос происходил со страницы commentedit)
     @PostMapping(value = {"/commentauthor","/commentauthor","/commentedit"})
     public String addCommentAuthor(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
