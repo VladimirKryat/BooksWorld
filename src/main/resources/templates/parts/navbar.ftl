@@ -8,13 +8,9 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="/comment">Comment</a>
-            </li>
-            <#--    userId > -1     -->
             <#if userId gt -1>
                 <li class="nav-item">
-                    <a class="nav-link" href="/comment/${userId}">My Comment</a>
+                    <a class="nav-link" href="/like?user=${userId}">My Likes</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/mySubscriptions">My subscriptions</a>

@@ -20,7 +20,6 @@ import ru.lesson.springBootProject.services.CommentService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
@@ -38,33 +37,6 @@ public class CommentController {
     @Autowired
     private BookService bookService;
 
-    //!!!!!!!!!!нуждается в рефакторинге
-    @GetMapping(value = {"/comment","/comment/{userId}"})
-    public String getListComment(
-            Map<String, Object> mapModel,
-            @PathVariable (name = "userId", required = false) Long userId,
-            @PathVariable (name = "commentId", required = false) Comment comment,
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @PageableDefault(sort = {"commentId"}, direction = Sort.Direction.ASC, size = 6) Pageable pageable,
-            HttpServletRequest request
-            ){
-        if (userId!=null && comment!=null){
-            mapModel.put("comment", comment);
-            return "comment";
-        }
-        Page<Comment> page;
-        if (userId!=null){
-            page = commentService.findAllByUser(userId,pageable);
-        }
-        else {
-            page = commentService.findAll(pageable);
-        }
-        mapModel.put("commentsPage",page);
-        mapModel.put("url", request.getRequestURL());
-        return "comment";
-    }
-
-
     @GetMapping(value = "/commentedit")
     public String editComment(
             @RequestParam(name = "comment") Long commentId,
@@ -73,6 +45,7 @@ public class CommentController {
     ){
         model.addAttribute("refUrl",referer);
         Comment oldComment=null;
+        //по ссылке откуда пришел пользователь определяем конкретный класс комментария
         if (referer.toLowerCase(Locale.ROOT).contains("authorinfo")){
             oldComment=new CommentAuthor();
             oldComment.setCommentId(commentId);
@@ -80,9 +53,13 @@ public class CommentController {
             oldComment =new CommentBook();
             oldComment.setCommentId(commentId);
         }
-        oldComment = commentService.findByIdAndInstanceofWithOwner(oldComment).orElseGet(null);
-        model.addAttribute("comment",oldComment);
-        return"comment";
+        //Если получили обект Comment переходим на страницу редактирования, иначе возращаемся на страницу, откуда пришёл пользователь
+        if (oldComment!=null) {
+            oldComment = commentService.findByIdAndInstanceofWithOwner(oldComment).orElseGet(null);
+            model.addAttribute("comment", oldComment);
+            return "comment";
+        }
+        return "redirect:referer";
     }
 //    В refUrl может прийти ссылка на страницу куда нужно вернуться (если пост запрос происходил со страницы commentedit)
     @PostMapping(value = {"/commentauthor","/commentauthor","/commentedit"})
@@ -161,5 +138,38 @@ public class CommentController {
         model.addAttribute("ownerId",ownerId);
         return "comment";
     }
+
+
+    //!!данный метод не работает в связи с изменением структуры Comment.
+    // список комментов пользователя не получится отобразить,
+    // так как коммент пользователя без комментируемой сущности не имеет смысла
+    // как вариант можно создать CommentDto,
+    // который будет иметь поле owner содержащий ссылку на сущность-владельца и имя/title владельца
+    @Deprecated
+//    @GetMapping(value = {"/comment","/comment/{userId}"})
+    public String getListComment(
+            Map<String, Object> mapModel,
+            @PathVariable (name = "userId", required = false) Long userId,
+            @PathVariable (name = "commentId", required = false) Comment comment,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PageableDefault(sort = {"commentId"}, direction = Sort.Direction.ASC, size = 6) Pageable pageable,
+            HttpServletRequest request
+    ){
+        if (userId!=null && comment!=null){
+            mapModel.put("comment", comment);
+            return "comment";
+        }
+        Page<Comment> page;
+        if (userId!=null){
+            page = commentService.findAllByUser(userId,pageable);
+        }
+        else {
+            page = commentService.findAll(pageable);
+        }
+        mapModel.put("commentsPage",page);
+        mapModel.put("url", request.getRequestURL());
+        return "comment";
+    }
+
 
 }

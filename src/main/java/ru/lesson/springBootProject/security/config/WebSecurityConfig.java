@@ -25,8 +25,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserServiceImpl userDetailsService;
     @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
     private AuthenticationProvider authenticationProvider;
     @Autowired
     private DataSource dataSource;
@@ -44,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                     .loginPage("/login")
                     .permitAll()
-                    .defaultSuccessUrl("/comment")
+                    .defaultSuccessUrl("/bookList")
                     .and()
                 .rememberMe()
                     .rememberMeParameter("remember-me")

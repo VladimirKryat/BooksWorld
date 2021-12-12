@@ -82,7 +82,8 @@ public class BookServiceImpl implements BookService{
         Page<BookDto> page =null;
         if (filterBook !=null){
             //если задана сортировка по количеству лайков, то меняем атрибут сортировки у Pageable.
-            //если сортировка не задана, но filterBook!=null, что возможно только в случае если задан жанр для фильтрации, то нужно установить сортировку по умолчанию, чтобы избежать ошибок
+            //если сортировка не задана, но filterBook!=null, что возможно только в случае если задан жанр для фильтрации,
+            // то нужно установить сортировку по умолчанию, чтобы избежать ошибок
             if (filterBook.getSortedByLikes()!=null&&filterBook.getSortedByLikes()!= FilterBook.SortedByLikes.NONE){
                 pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), JpaSort.unsafe(Sort.Direction.valueOf(filterBook.getSortedByLikes().name()), "count(lk)"));
 
@@ -90,6 +91,7 @@ public class BookServiceImpl implements BookService{
             //устанавливаем сортировку по умолчанию
                 pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.ASC, "bookId"));
             }
+            //вызываем метод поиска, который отберёт записи по жанру
             if (filterBook.getGenreName()!=null) {
                 page = bookRepository.findAllWithParam(userId, pageable, filterBook.getGenreName());
             }
@@ -114,5 +116,10 @@ public class BookServiceImpl implements BookService{
     @Override
     public Book findById(Long bookId) {
         return bookRepository.findById(bookId).orElseGet(null);
+    }
+
+    @Override
+    public Page<BookDto> findAllLikes(Long userId, Pageable pageable) {
+        return bookRepository.findAllByLikes(userId, pageable);
     }
 }

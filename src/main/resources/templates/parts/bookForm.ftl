@@ -67,12 +67,8 @@
     </form>
 </#macro>
 
-<#macro listBookCard withFilter>
+<#macro listBookCard books>
     <#include "security.ftl">
-    <#import "pager.ftl" as pager>
-    <#if withFilter>
-        <@filterNavBar/>
-    </#if>
     <div class="card-columns">
 
         <#list books.getContent() as bookItem>
@@ -126,7 +122,6 @@
             </div>
         </#list>
     </div>
-    <@pager.pager url books "books"/>
 </#macro>
 
 <#--    Form for Filter BookList by Genre or Sorted by Likes-->

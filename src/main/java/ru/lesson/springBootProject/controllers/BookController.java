@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.lesson.springBootProject.dto.BookDto;
 import ru.lesson.springBootProject.models.Book;
 import ru.lesson.springBootProject.models.GenreName;
+import ru.lesson.springBootProject.models.User;
 import ru.lesson.springBootProject.security.details.UserDetailsImpl;
 import ru.lesson.springBootProject.services.AuthorService;
 import ru.lesson.springBootProject.services.BookService;
@@ -154,5 +155,21 @@ public class BookController {
     ){
         bookService.delete(bookId);
         return "redirect:/bookList";
+    }
+
+    @GetMapping("/like")
+    public String getLikes(
+            @RequestParam(name = "user") Long userId,
+            Model model,
+            @PageableDefault(size=3, sort ={"bookId"}, direction = Sort.Direction.ASC )Pageable pageable,
+            HttpServletRequest request
+    ){
+        model.addAttribute("url",request.getRequestURL()+"?user="+userId+"&amp;");
+        Page<BookDto> page = bookService.findAllLikes(userId,pageable);
+        model.addAttribute("books",page);
+        if (page.getNumberOfElements()==0) {
+            model.mergeAttributes(Map.of("message","You have not got any likes"));
+        }
+        return "likeList";
     }
 }

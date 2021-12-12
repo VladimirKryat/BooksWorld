@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
             throw new UserServiceException(UserServiceUtils.messageForInvalidUserdata(user));
         }
         if (existsByUsername(user.getUsername())){
-           throw new UsernameNotUniqueException("Username exist");
+            throw new UsernameNotUniqueException("Username exist");
         }
         user.setState(State.UNVERIFIED);
         user.setRoles(Collections.singleton(Role.USER));
@@ -123,7 +123,7 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
-//    добавляем подписку и в set у автора и у пользователя, для сохранения синхронизации
+    //    добавляем подписку и в set у автора и у пользователя, для сохранения синхронизации
     @Transactional
     @Override
     public User addSubscriptions(User user, Author author)throws UserServiceException{

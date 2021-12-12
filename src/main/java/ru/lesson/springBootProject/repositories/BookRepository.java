@@ -9,6 +9,7 @@ import ru.lesson.springBootProject.dto.BookDto;
 import ru.lesson.springBootProject.models.Book;
 import ru.lesson.springBootProject.models.GenreBook;
 import ru.lesson.springBootProject.models.GenreName;
+import ru.lesson.springBootProject.models.User;
 
 import java.util.Set;
 
@@ -31,4 +32,9 @@ public interface BookRepository extends JpaRepository<Book,Long> {
         countQuery = "select count(b) from Book b left join b.authors auth where :authorId in (auth.authorId) and :userId = :userId"
     )
     Page<BookDto> findAllByAuthors(@Param("userId") Long userId,@Param("authorId") Long authorId, Pageable pageable );
+
+    @Query(value = "select new ru.lesson.springBootProject.dto.BookDto (b, count(lk), true) " +
+            "from Book b left join b.likes lk where :userId in (lk.userId) group by b",
+            countQuery = "select count(b) from  Book b left join b.likes lk where :userId in (lk.userId)")
+    Page<BookDto> findAllByLikes(@Param("userId") Long userId, Pageable pageable);
 }

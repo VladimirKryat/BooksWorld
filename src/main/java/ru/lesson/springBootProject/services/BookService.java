@@ -27,4 +27,6 @@ public interface BookService {
     Page<BookDto> findAllByAuthors(Long userId,Long authorId, Pageable pageable);
 
     Book findById(Long ownerId);
+
+    Page<BookDto> findAllLikes(Long userId, Pageable pageable);
 }
