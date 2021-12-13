@@ -5,12 +5,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import ru.lesson.springBootProject.dto.BookDto;
 import ru.lesson.springBootProject.models.Book;
 import ru.lesson.springBootProject.models.GenreBook;
 import ru.lesson.springBootProject.models.GenreName;
-import ru.lesson.springBootProject.models.User;
 
+import java.util.Optional;
 import java.util.Set;
 
 public interface BookRepository extends JpaRepository<Book,Long> {
@@ -37,4 +38,9 @@ public interface BookRepository extends JpaRepository<Book,Long> {
             "from Book b left join b.likes lk where :userId in (lk.userId) group by b",
             countQuery = "select count(b) from  Book b left join b.likes lk where :userId in (lk.userId)")
     Page<BookDto> findAllByLikes(@Param("userId") Long userId, Pageable pageable);
+
+
+    @Query(value = "select new ru.lesson.springBootProject.dto.BookDto (b, count(lk), sum(case when :userId = lk.userId then 1 else 0 end)>0) " +
+            "from Book b left join b.genres gn left join b.likes lk where :bookId = b.bookId group by b")
+    BookDto findBookDtoById(@Param("userId") Long userId, @Param("bookId") Long bookId);
 }

@@ -1,6 +1,7 @@
 package ru.lesson.springBootProject.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,18 +18,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.lesson.springBootProject.dto.BookDto;
 import ru.lesson.springBootProject.models.Book;
 import ru.lesson.springBootProject.models.GenreName;
-import ru.lesson.springBootProject.models.User;
 import ru.lesson.springBootProject.security.details.UserDetailsImpl;
 import ru.lesson.springBootProject.services.AuthorService;
 import ru.lesson.springBootProject.services.BookService;
 import ru.lesson.springBootProject.services.filters.FilterBook;
 
-import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Collections;
 import java.util.Map;
 
 @Controller
@@ -110,7 +108,7 @@ public class BookController {
             @RequestParam(name = "sortedByLikes", required = false) String sortedByLikes,
             @RequestParam(name = "genreName", required = false) String genreName,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @PageableDefault(size=3, sort ={"bookId"}, direction = Sort.Direction.ASC )Pageable pageable,
+            @Qualifier("books") @PageableDefault(size=3, sort ={"bookId"}, direction = Sort.Direction.ASC )Pageable pageable,
             HttpServletRequest request
     ){
         if (message!=null){
@@ -161,7 +159,7 @@ public class BookController {
     public String getLikes(
             @RequestParam(name = "user") Long userId,
             Model model,
-            @PageableDefault(size=3, sort ={"bookId"}, direction = Sort.Direction.ASC )Pageable pageable,
+            @Qualifier("books") @PageableDefault(size=3, sort ={"bookId"}, direction = Sort.Direction.ASC )Pageable pageable,
             HttpServletRequest request
     ){
         model.addAttribute("url",request.getRequestURL()+"?user="+userId+"&amp;");
@@ -171,5 +169,19 @@ public class BookController {
             model.mergeAttributes(Map.of("message","You have not got any likes"));
         }
         return "likeList";
+    }
+
+    @GetMapping("bookInfo")
+    public String getBookInfo(
+            @RequestParam(name = "book") Long bookId,
+            @Qualifier("comments") @PageableDefault(size=6, sort ={"commentId"}, direction = Sort.Direction.ASC )Pageable pageable,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            HttpServletRequest request,
+            Model model
+    ){
+        model.addAttribute("url",request.getRequestURL()+"?book="+bookId+"&amp;");
+        model.addAttribute("book", bookService.findBookDtoById(userDetails.getUser().getUserId(), bookId));
+        model.addAttribute("bookComments",bookService.findAllComments(bookId,pageable));
+        return "bookInfo";
     }
 }

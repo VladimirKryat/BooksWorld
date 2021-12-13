@@ -62,7 +62,7 @@ public class CommentController {
         return "redirect:referer";
     }
 //    В refUrl может прийти ссылка на страницу куда нужно вернуться (если пост запрос происходил со страницы commentedit)
-    @PostMapping(value = {"/commentauthor","/commentauthor","/commentedit"})
+    @PostMapping(value = {"/commentauthor","/commentauthor","/commentedit","/commentbook"})
     public String addCommentAuthor(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Valid Comment comment,

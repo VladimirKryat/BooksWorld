@@ -11,6 +11,7 @@ import ru.lesson.springBootProject.dto.BookDto;
 import ru.lesson.springBootProject.exceptions.BookServiceException;
 import ru.lesson.springBootProject.models.*;
 import ru.lesson.springBootProject.repositories.BookRepository;
+import ru.lesson.springBootProject.repositories.CommentBookRepository;
 import ru.lesson.springBootProject.repositories.GenreRepository;
 import ru.lesson.springBootProject.services.filters.FilterBook;
 
@@ -22,6 +23,8 @@ import java.util.stream.Collectors;
 public class BookServiceImpl implements BookService{
     @Autowired
     private BookRepository bookRepository;
+    @Autowired
+    private CommentBookRepository commentBookRepository;
     @Override
     public Book save(Book book){
         return bookRepository.save(book);
@@ -121,5 +124,15 @@ public class BookServiceImpl implements BookService{
     @Override
     public Page<BookDto> findAllLikes(Long userId, Pageable pageable) {
         return bookRepository.findAllByLikes(userId, pageable);
+    }
+
+    @Override
+    public Page<CommentBook> findAllComments(Long bookId, Pageable pageable) {
+        return commentBookRepository.findAllByBook_BookId(bookId,pageable);
+    }
+
+    @Override
+    public BookDto findBookDtoById(Long userId, Long bookId) {
+        return bookRepository.findBookDtoById(userId,bookId);
     }
 }

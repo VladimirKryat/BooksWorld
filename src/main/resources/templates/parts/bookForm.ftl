@@ -68,59 +68,67 @@
 </#macro>
 
 <#macro listBookCard books>
-    <#include "security.ftl">
+    <#import "bookForm.ftl" as bf>
     <div class="card-columns">
-
-        <#list books.getContent() as bookItem>
-            <div class="card my-3" style="width: 18rem;">
+        <#list books as bookItem>
+            <div class="card" style="width: 18rem;">
                 <#if bookItem.filename??>
                     <img class="card-img-top" src="/img/book/${bookItem.filename}" alt=""/>
                 </#if>
-                <div class="card-body">
-                    <h5 class="card-title">
-                        ${bookItem.title}
-                    </h5>
-                    <h6 class="card-subtitle mb-2 text-muted">
-
-                        <#list bookItem.authors as author>
-                            <a class="btn btn-info" href="/authorInfo?author=${author.authorId}">${author.name}</a><#sep>, </#list>
-                    </h6>
-                    <p class="card-text">
-                        <#if bookItem.description??>
-                            <#if bookItem.description?length gte 255>
-                                ${bookItem.description?substring(0,252)}...
-                            <#else >
-                                ${bookItem.description}
-                            </#if>
-                        </#if>
-                    </p>
-                    <div class="card-footer">
-                        <#if bookItem.genres??>
-                            <#list bookItem.genres as genreBook>
-                                <div>${genreBook}</div>
-                            </#list>
-                        </#if>
-                    </div>
-                    <div class="card-footer text-center">
-
-                        <a href="book/${bookItem.bookId}/like">
-                            <#if bookItem.meIsLiked>
-                                <i class="fas fa-heart"></i>
-                            <#else>
-                                <i class="far fa-heart"></i>
-                            </#if>
-                            ${bookItem.likes}
-                        </a>
-                    </div>
-                    <#if isManager>
-                        <div class="card-footer text-center">
-                            <a href="/manager/bookEditor?book=${bookItem.bookId}">Change book</a>
-                            <a class="btn btn-outline-danger" href="/manager/bookDelete?book=${bookItem.bookId}">Delete book</a>
-                        </div>
-                    </#if>
+                <div class="card my-3" style="width: 18rem;">
+                    <@bf.cardBookDto bookItem false/>
                 </div>
             </div>
         </#list>
+    </div>
+</#macro>
+
+<#macro cardBookDto bookItem isFullDescription>
+    <#include "security.ftl">
+    <div class="card-body">
+        <h5 class="card-title">
+            <a class="btn btn-info" href="/bookInfo?book=${bookItem.bookId}">${bookItem.title}</a>
+        </h5>
+        <h6 class="card-subtitle mb-2 text-muted">
+
+            <#list bookItem.authors as author>
+                <a class="btn btn-info" href="/authorInfo?author=${author.authorId}">${author.name}</a><#sep>, </#list>
+        </h6>
+        <p class="card-text">
+            <#if bookItem.description??>
+                <#if isFullDescription>
+                    ${bookItem.description}
+                <#elseif bookItem.description?length gte 255>
+                    ${bookItem.description?substring(0,252)}...
+                <#else >
+                    ${bookItem.description}
+                </#if>
+            </#if>
+        </p>
+        <div class="card-footer">
+            <#if bookItem.genres??>
+                <#list bookItem.genres as genreBook>
+                    <div>${genreBook}</div>
+                </#list>
+            </#if>
+        </div>
+        <div class="card-footer text-center">
+
+            <a href="book/${bookItem.bookId}/like">
+                <#if bookItem.meIsLiked>
+                    <i class="fas fa-heart"></i>
+                <#else>
+                    <i class="far fa-heart"></i>
+                </#if>
+                ${bookItem.likes}
+            </a>
+        </div>
+        <#if isManager>
+            <div class="card-footer text-center">
+                <a href="/manager/bookEditor?book=${bookItem.bookId}">Change book</a>
+                <a class="btn btn-outline-danger" href="/manager/bookDelete?book=${bookItem.bookId}">Delete book</a>
+            </div>
+        </#if>
     </div>
 </#macro>
 

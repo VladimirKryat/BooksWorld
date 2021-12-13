@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.lesson.springBootProject.dto.BookDto;
 import ru.lesson.springBootProject.models.Book;
+import ru.lesson.springBootProject.models.CommentBook;
 import ru.lesson.springBootProject.models.User;
 import ru.lesson.springBootProject.services.filters.FilterBook;
 
@@ -29,4 +30,8 @@ public interface BookService {
     Book findById(Long ownerId);
 
     Page<BookDto> findAllLikes(Long userId, Pageable pageable);
+
+    Page<CommentBook> findAllComments(Long bookId, Pageable pageable);
+
+     BookDto findBookDtoById(Long userId, Long bookId);
 }

@@ -69,4 +69,10 @@ public class RepositoryTest {
         Assert.assertTrue(author.get().getCountSubscribers()==3);
 
     }
+
+    @Test
+    public void findBookDtoById(){
+        BookDto bookDtoById = bookRepository.findBookDtoById(1L, 2L);
+        Assert.assertNotNull(bookDtoById);
+    }
 }

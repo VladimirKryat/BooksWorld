@@ -18,4 +18,7 @@ public interface CommentBookRepository extends JpaRepository<CommentBook, Long> 
     @Query("select c from CommentBook c left join fetch c.book where c.commentId=:commentId")
     Optional<CommentBook> findByCommentIdWithBook(@Param("commentId") Long commentId);
 
+    @Query(value = "select comm from CommentBook comm left join comm.book book where book.bookId=:bookId",
+            countQuery = "select count(comm) from CommentBook comm left join comm.book book where book.bookId=:bookId")
+    Page<CommentBook> findAllByBook_BookId(@Param("bookId") Long bookId, Pageable pageable);
 }

@@ -10,7 +10,7 @@
             <@a.cardBody author/>
         </div>
     </div>
-    <@b.listBookCard books/>
+    <@b.listBookCard books.getContent()/>
     <@pager.pager url books "books"/>
 
     <div class="card-footer text-center mt-2">
