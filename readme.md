@@ -6,6 +6,7 @@
 поэтому дизайну и UI досталось минимальное количество времени.
 
 Структура БД:
+
 ![HibernateEntity](./mediaForReadme/model.png)
 
 В проекте применена ReCaptcha от Google при регистрации пользователя.
@@ -40,5 +41,6 @@
 Поэтому для его запуска необходимо создать БД переопределить application.properties.
 Данный процесс маловероятен, поэтому прикладываю скрины работы приложения.
 
-##Screen Shots
-![Screen](./mediaForReadme/gifResult.gif)
+## Screen Shots
+
+![Screen](./mediaForReadme/gifResult.gif) 
