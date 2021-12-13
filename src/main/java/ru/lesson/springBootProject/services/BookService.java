@@ -13,8 +13,6 @@ import java.util.List;
 public interface BookService {
     Book save(Book book);
 
-    List<Book> findAll();
-
     Page<BookDto> findAll(Long userId, Pageable pageable);
 
     Book like(Book book, User user);

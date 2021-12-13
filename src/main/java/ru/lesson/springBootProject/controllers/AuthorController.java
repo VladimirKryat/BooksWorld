@@ -55,10 +55,10 @@ public class AuthorController {
     ){
         //если null то ошибка добавится из binding
         //а если день рождения в будущем, то добавляем ошибку сами
-        if (author.getBirthday()!=null && author.getBirthday().isBefore(LocalDate.now())) {
+        if (author.getBirthday()!=null && author.getBirthday().isAfter(LocalDate.now())) {
             bindingResult.addError(new FieldError("author","birthday","Birthday can't be in the future"));
         }
-        if (author.getDateOfDeath()!=null && author.getDateOfDeath().isBefore(LocalDate.now())){
+        if (author.getDateOfDeath()!=null && author.getDateOfDeath().isAfter(LocalDate.now())){
             bindingResult.addError(new FieldError("author","dateOfDeath","Don't fill if it didn't happen"));
         }
         //если обе даты корректно введены, проверяем их очерёдность

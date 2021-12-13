@@ -29,14 +29,15 @@ public class BookServiceImpl implements BookService{
     public Book save(Book book){
         return bookRepository.save(book);
     }
-    @Override
-    public List<Book>findAll(){
-        return bookRepository.findAll();
-    }
 
     @Override
     public Page<BookDto> findAll(Long userId, Pageable pageable){
-        return bookRepository.findAll(userId,pageable);
+        Page<BookDto> resultPage = bookRepository.findAll(userId, pageable);
+        if (resultPage.getNumber()>=resultPage.getTotalPages()){
+            pageable= PageRequest.of(resultPage.getTotalPages()-1,pageable.getPageSize(),pageable.getSort());
+            resultPage = findAll(userId,pageable);
+        }
+        return resultPage;
     }
 
     @Override
@@ -103,7 +104,7 @@ public class BookServiceImpl implements BookService{
         if (page ==null) page= bookRepository.findAll(userId,pageable);
 
         //если текущая страница дальше максимальной, то рекурсивно запрашиваем последнюю возможную страницу
-        if (page.getNumber()>page.getTotalPages())
+        if (page.getNumber()>=page.getTotalPages())
         {
             pageable= PageRequest.of(page.getTotalPages()-1,pageable.getPageSize(),pageable.getSort());
             page = findAllWithFilter(userId,pageable, filterBook);
@@ -113,7 +114,12 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public Page<BookDto> findAllByAuthors(Long userId,Long authorId, Pageable pageable) {
-        return bookRepository.findAllByAuthors(userId, authorId, pageable);
+        Page<BookDto> resultPage = bookRepository.findAllByAuthors(userId, authorId, pageable);
+        if (resultPage.getNumber()>=resultPage.getTotalPages()){
+            pageable= PageRequest.of(resultPage.getTotalPages()-1,pageable.getPageSize(),pageable.getSort());
+            resultPage = findAllByAuthors(userId,authorId,pageable);
+        }
+        return resultPage;
     }
 
     @Override
@@ -123,12 +129,22 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public Page<BookDto> findAllLikes(Long userId, Pageable pageable) {
-        return bookRepository.findAllByLikes(userId, pageable);
+        Page<BookDto> resultPage = bookRepository.findAllByLikes(userId, pageable);
+        if (resultPage.getNumber()>=resultPage.getTotalPages()){
+            pageable= PageRequest.of(resultPage.getTotalPages()-1,pageable.getPageSize(),pageable.getSort());
+            resultPage = findAllLikes(userId,pageable);
+        }
+        return resultPage;
     }
 
     @Override
     public Page<CommentBook> findAllComments(Long bookId, Pageable pageable) {
-        return commentBookRepository.findAllByBook_BookId(bookId,pageable);
+        Page<CommentBook> resultPage = commentBookRepository.findAllByBook_BookId(bookId, pageable);
+        if (resultPage.getNumber()>=resultPage.getTotalPages()){
+            pageable= PageRequest.of(resultPage.getTotalPages()-1,pageable.getPageSize(),pageable.getSort());
+            resultPage = findAllComments(bookId,pageable);
+        }
+        return resultPage;
     }
 
     @Override

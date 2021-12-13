@@ -19,6 +19,7 @@ import ru.lesson.springBootProject.security.details.UserDetailsImpl;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -42,8 +43,15 @@ public class UserServiceImpl implements UserService {
         if (!UserServiceUtils.isValidUserdata(user)){
             throw new UserServiceException(UserServiceUtils.messageForInvalidUserdata(user));
         }
+        //если пользователь с таким именем существует и его статус Delete или Unverified,
+        // тогда устанавливаем ему старый id и удаляем его старый код активации если он есть
+        //иначе бросаем исключение
         if (existsByUsername(user.getUsername())){
-            throw new UsernameNotUniqueException("Username exist");
+            User oldUser = userRepository.findByUsername(user.getUsername()).get();
+            if (oldUser.getState()==State.DELETED||oldUser.getState()==State.UNVERIFIED){
+                user.setUserId(oldUser.getUserId());
+                activationService.deleteActivate(oldUser.getUserId());
+            }else throw new UsernameNotUniqueException("Username exist");
         }
         user.setState(State.UNVERIFIED);
         user.setRoles(Collections.singleton(Role.USER));
